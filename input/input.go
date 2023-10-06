@@ -18,8 +18,12 @@ func ParseFile(filepath string) []*entities.Load {
   scanner := bufio.NewScanner(file)
 
   var loads []*entities.Load
+
+  // skip first line
+  scanner.Scan()
+
   for scanner.Scan() {
-    
+    loads = append(loads, parseLine(scanner.Text()))
   }
   file.Close()
 
