@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"vehicle-routing-problem/input"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	input.ParseFile("/Users/danieldowd/Downloads/problem1.txt")
 }
