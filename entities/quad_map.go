@@ -58,6 +58,10 @@ func (m *QuadMap) GetChildren() [4]*QuadMap {
 	return m.subMaps
 }
 
+func (m* QuadMap) GetLoads() []*Load {
+	return m.loads
+}
+
 func NewQuadMap(loads []*Load) *QuadMap {
 	quadMap := QuadMap{nil, 1, [4]*QuadMap{}, loads, 0, 0}
 
