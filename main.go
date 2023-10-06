@@ -1,10 +1,16 @@
 package main
 
 import (
-	"vehicle-routing-problem/input"
+	"vehicle-routing-problem/cli"
 )
 
 func main() {
-	loads := input.ParseLoadFile("/Users/danieldowd/Downloads/problem1.txt")
+	loads := cli.ParseLoadFile("/Users/danieldowd/Downloads/problem1.txt")
+	dispatcher := NewDispatch(loads)
+	drivers := dispatcher.SearchForRoutes()
+
+
+	for _, driver := range drivers {
+	}
 
 }
