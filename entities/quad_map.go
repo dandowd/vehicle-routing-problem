@@ -2,6 +2,9 @@ package entities
 
 import "math"
 
+const MAX_DRIVE_TIME = 720
+const MAX_DISTANCE = MAX_DRIVE_TIME / 2
+
 type QuadMap struct {
   subMaps [4]*QuadMap
   loads []*Load
@@ -20,10 +23,10 @@ func (m* QuadMap) AddLoad(l* Load) {
 // This map has blind spots based off the smallest non-zero float64
 // TODO: Add dropoff location for better heuristics
 func (m* QuadMap) GenerateChildren() *QuadMap {
-  zeroMap := &QuadMap{[4]*QuadMap{}, nil, m.minX, 0, 0, m.maxY}
-  oneMap := &QuadMap{[4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, m.maxX, 0, m.maxY}
-  twoMap := &QuadMap{[4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, m.maxX, m.minY, -math.SmallestNonzeroFloat64}
-  threeMap := &QuadMap{[4]*QuadMap{}, nil, m.minX, 0, m.minY, -math.SmallestNonzeroFloat64}
+  zeroMap := &QuadMap{[4]*QuadMap{}, nil, -MAX_DISTANCE, 0, 0, MAX_DISTANCE}
+  oneMap := &QuadMap{[4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, MAX_DISTANCE, 0, MAX_DISTANCE}
+  twoMap := &QuadMap{[4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, MAX_DISTANCE, -MAX_DISTANCE, -math.SmallestNonzeroFloat64}
+  threeMap := &QuadMap{[4]*QuadMap{}, nil, -MAX_DISTANCE, 0, -MAX_DISTANCE, -math.SmallestNonzeroFloat64}
 
   m.subMaps[0] = zeroMap
   m.subMaps[1] = oneMap
