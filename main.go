@@ -5,5 +5,6 @@ import (
 )
 
 func main() {
-	input.ParseFile("/Users/danieldowd/Downloads/problem1.txt")
+	loads := input.ParseLoadFile("/Users/danieldowd/Downloads/problem1.txt")
+
 }

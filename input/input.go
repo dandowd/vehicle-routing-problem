@@ -8,7 +8,7 @@ import (
 	"vehicle-routing-problem/entities"
 )
 
-func ParseFile(filepath string) []*entities.Load {
+func ParseLoadFile(filepath string) []*entities.Load {
   file, err := os.Open(filepath)
 
   if err != nil {
