@@ -9,8 +9,5 @@ func main() {
 	dispatcher := NewDispatch(loads)
 	drivers := dispatcher.SearchForRoutes()
 
-
-	for _, driver := range drivers {
-	}
-
+	cli.PrintRoutes(drivers)
 }
