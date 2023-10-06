@@ -3,7 +3,6 @@ package entities
 const MAX_DRIVE_TIME = 720
 
 type Driver struct {
-	id             int
 	currentPoint   Point
 	completedLoads []Load
 	totalTime      float64
