@@ -44,10 +44,15 @@ func (m* QuadMap) GenerateChildren() *QuadMap {
   return m
 }
 
+func NewQuadMap(loads []*Load) *QuadMap {
+  minX, maxX, minY, maxY := findBounds(loads)
+  return &QuadMap{[4]*QuadMap{}, loads, minX, maxX, minY, maxY}
+}
+
 // Finds bounds of loads using pickup and dropoff locations
-func findBounds(loads* []*Load) (float64, float64, float64, float64) {
+func findBounds(loads []*Load) (float64, float64, float64, float64) {
   var minX, maxX, minY, maxY float64
-  for _, l := range *loads {
+  for _, l := range loads {
     if l.Pickup.X < minX {
       minX = l.Pickup.X
     }
