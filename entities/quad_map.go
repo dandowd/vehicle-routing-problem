@@ -1,5 +1,7 @@
 package entities
 
+import "math"
+
 type QuadMap struct {
   subMaps [4]*QuadMap
   loads []*Load
@@ -15,12 +17,13 @@ func (m* QuadMap) AddLoad(l* Load) {
 }
 
 // Generates children and adds loads based off pickup location
+// This map has blind spots based off the smallest non-zero float64
 // TODO: Add dropoff location for better heuristics
 func (m* QuadMap) GenerateChildren() *QuadMap {
-  zeroMap := &QuadMap{[4]*QuadMap{}, nil, m.minX, m.maxX / 2, m.minY / 2, m.maxY}
-  oneMap := &QuadMap{[4]*QuadMap{}, nil, m.maxX / 2, m.maxX, m.minY / 2, m.maxY}
-  twoMap := &QuadMap{[4]*QuadMap{}, nil, m.minX, m.maxX / 2, m.minY, m.maxY / 2}
-  threeMap := &QuadMap{[4]*QuadMap{}, nil, m.maxX / 2, m.maxX, m.minY, m.maxY / 2}
+  zeroMap := &QuadMap{[4]*QuadMap{}, nil, m.minX, 0, 0, m.maxY}
+  oneMap := &QuadMap{[4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, m.maxX, 0, m.maxY}
+  twoMap := &QuadMap{[4]*QuadMap{}, nil, m.minX, 0, m.minY, -math.SmallestNonzeroFloat64}
+  threeMap := &QuadMap{[4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, m.maxX, m.minY, -math.SmallestNonzeroFloat64}
 
   m.subMaps[0] = zeroMap
   m.subMaps[1] = oneMap
