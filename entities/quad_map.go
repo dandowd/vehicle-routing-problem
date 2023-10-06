@@ -16,7 +16,7 @@ func (m *QuadMap) HasPoint(p Point) bool {
 	return p.X >= m.originX-maxDistance && p.X <= m.originX+maxDistance && p.Y >= m.originY-maxDistance && p.Y <= m.originY+maxDistance
 }
 
-func (m *QuadMap) AddLoad(l *Load) {
+func (m *QuadMap) addLoad(l *Load) {
 	m.loads = append(m.loads, l)
 }
 
@@ -37,13 +37,13 @@ func (m *QuadMap) generateChildren() *QuadMap {
 
 	for _, l := range m.loads {
 		if zeroMap.HasPoint(l.Pickup) {
-			zeroMap.AddLoad(l)
+			zeroMap.addLoad(l)
 		} else if oneMap.HasPoint(l.Pickup) {
-			oneMap.AddLoad(l)
+			oneMap.addLoad(l)
 		} else if twoMap.HasPoint(l.Pickup) {
-			twoMap.AddLoad(l)
+			twoMap.addLoad(l)
 		} else if threeMap.HasPoint(l.Pickup) {
-			threeMap.AddLoad(l)
+			threeMap.addLoad(l)
 		}
 	}
 	return m

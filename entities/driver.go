@@ -9,3 +9,7 @@ type Driver struct {
 func (d *Driver) CompleteLoad(l Load) {
 	d.completedLoads = append(d.completedLoads, l)
 }
+
+func (d *Driver) GetCompletedLoads() []Load {
+	return d.completedLoads
+}
