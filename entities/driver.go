@@ -1,5 +1,7 @@
 package entities
 
+const MAX_DRIVE_TIME = 720
+
 type Driver struct {
 	id             int
 	currentPoint   Point
@@ -13,14 +15,10 @@ func (d *Driver) AddLoad(l *Load) {
 	d.totalTime += l.GetTime()
 }
 
-func (d *Driver) CompleteLoad(l Load) {
-	d.completedLoads = append(d.completedLoads, l)
-}
-
 func (d *Driver) GetCompletedLoads() []Load {
 	return d.completedLoads
 }
 
 func (d *Driver) CanPickup(load *Load) bool {
-	return d.currentPoint.DistanceTo(load.Pickup)+load.GetTime()+load.Dropoff.DistanceTo(Point{0, 0}) <= 360
+	return d.currentPoint.DistanceTo(load.Pickup)+load.GetTime()+load.Dropoff.DistanceTo(Point{0, 0}) <= MAX_DRIVE_TIME
 }

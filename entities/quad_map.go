@@ -1,6 +1,5 @@
 package entities
 
-const MAX_DRIVE_TIME = 720
 const MAX_DISTANCE = MAX_DRIVE_TIME / 2
 
 type QuadMap struct {
