@@ -4,7 +4,7 @@ type Driver struct {
 	id             int
 	currentPoint   Point
 	completedLoads []Load
-	totalTime		float64	
+	totalTime      float64
 }
 
 func (d *Driver) AddLoad(l *Load) {
@@ -19,4 +19,8 @@ func (d *Driver) CompleteLoad(l Load) {
 
 func (d *Driver) GetCompletedLoads() []Load {
 	return d.completedLoads
+}
+
+func (d *Driver) CanPickup(load *Load) bool {
+	return d.currentPoint.DistanceTo(load.Pickup)+load.GetTime()+load.Dropoff.DistanceTo(Point{0, 0}) <= 360
 }
