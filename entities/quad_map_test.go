@@ -10,7 +10,7 @@ func TestFindBounds(t *testing.T) {
 
   loads := []*Load{&loadOne, &loadTwo}
   
-  minX, maxX, minY, maxY := findBounds(&loads)
+  minX, maxX, minY, maxY := findBounds(loads)
 
   if minX != -2 {
     t.Error("Expected minX to be -2, got ", minX)
@@ -37,7 +37,7 @@ func TestGenerateChildrenShouldAddLoadsToCorrectQuad(t *testing.T) {
 
   loads := []*Load{&loadOne, &loadTwo, &loadThree, &loadFour}
   
-  minX, maxX, minY, maxY := findBounds(&loads)
+  minX, maxX, minY, maxY := findBounds(loads)
   quadMap := QuadMap{loads: loads, minX: minX, maxX: maxX, minY: minY, maxY: maxY}
 
   quadMap.GenerateChildren()

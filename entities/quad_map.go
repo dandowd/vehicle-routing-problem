@@ -22,8 +22,8 @@ func (m* QuadMap) AddLoad(l* Load) {
 func (m* QuadMap) GenerateChildren() *QuadMap {
   zeroMap := &QuadMap{[4]*QuadMap{}, nil, m.minX, 0, 0, m.maxY}
   oneMap := &QuadMap{[4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, m.maxX, 0, m.maxY}
-  twoMap := &QuadMap{[4]*QuadMap{}, nil, m.minX, 0, m.minY, -math.SmallestNonzeroFloat64}
-  threeMap := &QuadMap{[4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, m.maxX, m.minY, -math.SmallestNonzeroFloat64}
+  twoMap := &QuadMap{[4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, m.maxX, m.minY, -math.SmallestNonzeroFloat64}
+  threeMap := &QuadMap{[4]*QuadMap{}, nil, m.minX, 0, m.minY, -math.SmallestNonzeroFloat64}
 
   m.subMaps[0] = zeroMap
   m.subMaps[1] = oneMap
@@ -44,9 +44,15 @@ func (m* QuadMap) GenerateChildren() *QuadMap {
   return m
 }
 
-func NewQuadMap(loads []*Load) *QuadMap {
+func NewQuadMap(loads []*Load, depth int) *QuadMap {
   minX, maxX, minY, maxY := findBounds(loads)
-  return &QuadMap{[4]*QuadMap{}, loads, minX, maxX, minY, maxY}
+  quadMap := QuadMap{[4]*QuadMap{}, loads, minX, maxX, minY, maxY}
+  quadMap.GenerateChildren()
+
+  for i := 0; i < 4; i++ {
+
+  }
+  return &quadMap
 }
 
 // Finds bounds of loads using pickup and dropoff locations
