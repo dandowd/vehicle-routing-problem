@@ -6,6 +6,6 @@ type Driver struct {
 	completedLoads []Load
 }
 
-func (d* Driver) CompleteLoad(l Load) {
+func (d *Driver) CompleteLoad(l Load) {
 	d.completedLoads = append(d.completedLoads, l)
 }

@@ -36,7 +36,7 @@ func TestGenerateChildrenShouldAddLoadsToCorrectQuad(t *testing.T) {
 
 func TestOriginPlacement(t *testing.T) {
 	quadMap := NewQuadMap([]*Load{})
-	
+
 	if quadMap.originX != 0 {
 		t.Error("Expected originX to be 0, got ", quadMap.originX)
 	}
@@ -81,7 +81,7 @@ func TestOriginPlacement(t *testing.T) {
 	if quadZeroTwo.originY != 90 {
 		t.Error("Expected quadZeroTwo originY to be 90, got ", quadZeroTwo.originY)
 	}
-	
+
 	quadZeroThree := quadZero.GetChildren()[3]
 	if quadZeroThree.originX != 270 {
 		t.Error("Expected quadZeroThree originX to be 270, got ", quadZeroThree.originX)

@@ -4,10 +4,10 @@ const MAX_DRIVE_TIME = 720
 const MAX_DISTANCE = MAX_DRIVE_TIME / 2
 
 type QuadMap struct {
-	parent                 *QuadMap
-	zoomLevel              int
-	subMaps                [4]*QuadMap
-	loads                  []*Load
+	parent           *QuadMap
+	zoomLevel        int
+	subMaps          [4]*QuadMap
+	loads            []*Load
 	originX, originY float64
 }
 
@@ -23,12 +23,12 @@ func (m *QuadMap) AddLoad(l *Load) {
 // Generates children and adds loads based off pickup location
 // TODO: Add dropoff location for better heuristics
 func (m *QuadMap) generateChildren() *QuadMap {
-	var originOffset = float64(MAX_DISTANCE / m.zoomLevel) / 2
+	var originOffset = float64(MAX_DISTANCE/m.zoomLevel) / 2
 
-	zeroMap := &QuadMap{m, m.zoomLevel + 1, [4]*QuadMap{}, nil, m.originX+originOffset, m.originY+originOffset}
-	oneMap := &QuadMap{m, m.zoomLevel + 1, [4]*QuadMap{}, nil, m.originX-originOffset, m.originY+originOffset}
-	twoMap := &QuadMap{m, m.zoomLevel + 1, [4]*QuadMap{}, nil, m.originX-originOffset, m.originY-originOffset}
-	threeMap := &QuadMap{m, m.zoomLevel + 1, [4]*QuadMap{}, nil, m.originX+originOffset, m.originY-originOffset}
+	zeroMap := &QuadMap{m, m.zoomLevel + 1, [4]*QuadMap{}, nil, m.originX + originOffset, m.originY + originOffset}
+	oneMap := &QuadMap{m, m.zoomLevel + 1, [4]*QuadMap{}, nil, m.originX - originOffset, m.originY + originOffset}
+	twoMap := &QuadMap{m, m.zoomLevel + 1, [4]*QuadMap{}, nil, m.originX - originOffset, m.originY - originOffset}
+	threeMap := &QuadMap{m, m.zoomLevel + 1, [4]*QuadMap{}, nil, m.originX + originOffset, m.originY - originOffset}
 
 	m.subMaps[0] = zeroMap
 	m.subMaps[1] = oneMap
