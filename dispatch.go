@@ -36,5 +36,5 @@ func (d *Dispatch) SearchForRoutes() []*entities.Driver {
 		}
 	}
 
-	return drivers 
+	return drivers
 }
