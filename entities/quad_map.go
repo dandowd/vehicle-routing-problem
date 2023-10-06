@@ -6,6 +6,7 @@ const MAX_DRIVE_TIME = 720
 const MAX_DISTANCE = MAX_DRIVE_TIME / 2
 
 type QuadMap struct {
+  parent *QuadMap
   subMaps [4]*QuadMap
   loads []*Load
   minX, maxX, minY, maxY float64
@@ -22,11 +23,11 @@ func (m* QuadMap) AddLoad(l* Load) {
 // Generates children and adds loads based off pickup location
 // This map has blind spots based off the smallest non-zero float64
 // TODO: Add dropoff location for better heuristics
-func (m* QuadMap) GenerateChildren() *QuadMap {
-  zeroMap := &QuadMap{[4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, MAX_DISTANCE, 0, MAX_DISTANCE}
-  oneMap := &QuadMap{[4]*QuadMap{}, nil, -MAX_DISTANCE, 0, 0, MAX_DISTANCE}
-  twoMap := &QuadMap{[4]*QuadMap{}, nil, -MAX_DISTANCE, 0, -MAX_DISTANCE, -math.SmallestNonzeroFloat64}
-  threeMap := &QuadMap{[4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, MAX_DISTANCE, -MAX_DISTANCE, -math.SmallestNonzeroFloat64}
+func (m* QuadMap) generateChildren() *QuadMap {
+  zeroMap := &QuadMap{m, [4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, MAX_DISTANCE, 0, MAX_DISTANCE}
+  oneMap := &QuadMap{m, [4]*QuadMap{}, nil, -MAX_DISTANCE, 0, 0, MAX_DISTANCE}
+  twoMap := &QuadMap{m, [4]*QuadMap{}, nil, -MAX_DISTANCE, 0, -MAX_DISTANCE, -math.SmallestNonzeroFloat64}
+  threeMap := &QuadMap{m, [4]*QuadMap{}, nil, math.SmallestNonzeroFloat64, MAX_DISTANCE, -MAX_DISTANCE, -math.SmallestNonzeroFloat64}
 
   m.subMaps[0] = zeroMap
   m.subMaps[1] = oneMap
@@ -47,14 +48,20 @@ func (m* QuadMap) GenerateChildren() *QuadMap {
   return m
 }
 
+func (m* QuadMap) GetChildren() [4]*QuadMap {
+  if m.subMaps[0] == nil {
+    m.generateChildren()
+    return m.subMaps
+  }
+
+  return m.subMaps
+}
+
 func NewQuadMap(loads []*Load, depth int) *QuadMap {
   minX, maxX, minY, maxY := findBounds(loads)
-  quadMap := QuadMap{[4]*QuadMap{}, loads, minX, maxX, minY, maxY}
-  quadMap.GenerateChildren()
+  quadMap := QuadMap{nil, [4]*QuadMap{}, loads, minX, maxX, minY, maxY}
+  quadMap.generateChildren()
 
-  for i := 0; i < 4; i++ {
-
-  }
   return &quadMap
 }
 

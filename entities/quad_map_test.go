@@ -40,7 +40,7 @@ func TestGenerateChildrenShouldAddLoadsToCorrectQuad(t *testing.T) {
   minX, maxX, minY, maxY := findBounds(loads)
   quadMap := QuadMap{loads: loads, minX: minX, maxX: maxX, minY: minY, maxY: maxY}
 
-  quadMap.GenerateChildren()
+  quadMap.generateChildren()
 
   if len(quadMap.subMaps[0].loads) != 1 {
     t.Error("Expected subMap[0] to have 1 load, got ", len(quadMap.subMaps[0].loads))
