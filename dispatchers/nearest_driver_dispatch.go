@@ -13,6 +13,7 @@ func NewNearestDriverDispatch(loads []*entities.Load, maxRange float64) *Nearest
 	return &NearestDriverDispatch{loads: loads, maxRange: maxRange}
 }
 
+// This is meant to optimize for the number of drivers used.
 func (d *NearestDriverDispatch) SearchForRoutes() []*entities.Driver {
 	var drivers []*entities.Driver
 	for _, load := range d.loads {
