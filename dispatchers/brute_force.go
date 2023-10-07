@@ -16,7 +16,7 @@ func (d *BruteForceDispatch) SearchForRoutes() []*entities.Driver {
 	for _, load := range d.loadQueue {
 		var driver *entities.Driver
 		for _, d := range drivers {
-			if d.CanPickup(load) {
+			if d.CanMoveLoad(load) {
 				driver = d
 				break
 			}
@@ -27,7 +27,7 @@ func (d *BruteForceDispatch) SearchForRoutes() []*entities.Driver {
 			drivers = append(drivers, driver)
 		}
 
-		driver.AddLoad(load)
+		driver.MoveLoad(load)
 	}
 
   for _, driver := range drivers {

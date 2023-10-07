@@ -13,7 +13,7 @@ func PrintRoutes(drivers []*entities.Driver) {
 
 func FormatDrivers(drivers []*entities.Driver) {
 	for _, driver := range drivers {
-    driverLoads := "["
+    driverLoads := fmt.Sprintf("%f[", driver.GetTotalTime())
 		for _, load := range driver.GetCompletedLoads() {
       driverLoads += fmt.Sprintf("%v,", load.LoadNumber)
 		}
