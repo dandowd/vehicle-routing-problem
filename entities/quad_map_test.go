@@ -11,7 +11,7 @@ func TestGenerateChildrenShouldAddLoadsToCorrectQuad(t *testing.T) {
 	loadThree := NewLoad(3, Point{-4, -3}, Point{-5, -2})
 	loadFour := NewLoad(4, Point{7, -3}, Point{5, -2})
 
-	loads := []*Load{&loadOne, &loadTwo, &loadThree, &loadFour, &outOfBoundsLoad}
+	loads := []*Load{loadOne, loadTwo, loadThree, loadFour, outOfBoundsLoad}
 
 	quadMap := NewQuadMap(loads)
 
@@ -98,7 +98,7 @@ func TestZoomLevelsWork(t *testing.T) {
 	loadThree := NewLoad(3, Point{181, 181}, Point{3, 2})
 	loadFour := NewLoad(4, Point{-1, 2}, Point{3, 2})
 
-	loads := []*Load{&loadOne, &loadTwo, &loadThree, &loadFour}
+	loads := []*Load{loadOne, loadTwo, loadThree, loadFour}
 
 	quadMap := NewQuadMap(loads)
 	if len(quadMap.loads) != 4 {
