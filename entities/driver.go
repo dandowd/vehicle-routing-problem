@@ -24,6 +24,10 @@ func (d *Driver) MoveLoad(l *Load) {
 	}
 }
 
+func (d *Driver) GetCurrentPoint() Point {
+	return d.currentPoint
+}
+
 func (d *Driver) GetCompletedLoads() []*Load {
 	return d.completedLoads
 }
