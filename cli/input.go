@@ -60,3 +60,4 @@ func parseLoadPoint(point string) (float64, float64) {
 
   return x, y
 }
+
