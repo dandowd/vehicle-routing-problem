@@ -21,3 +21,8 @@ func (d *Driver) GetCompletedLoads() []Load {
 func (d *Driver) CanPickup(load *Load) bool {
 	return d.currentPoint.DistanceTo(load.Pickup)+load.GetTime()+load.Dropoff.DistanceTo(Point{0, 0}) <= MAX_DRIVE_TIME
 }
+
+func (d *Driver) ReturnToOrigin() {
+	d.totalTime += d.currentPoint.DistanceTo(Point{0, 0})
+	d.currentPoint = Point{0, 0}
+}
