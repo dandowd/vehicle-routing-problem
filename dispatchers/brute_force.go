@@ -1,6 +1,8 @@
 package dispatchers
 
-import "vehicle-routing-problem/entities"
+import (
+	"vehicle-routing-problem/entities"
+)
 
 type BruteForceDispatch struct {
 	loadQueue []*entities.Load
@@ -14,20 +16,20 @@ func (d *BruteForceDispatch) SearchForRoutes() []*entities.Driver {
 	var drivers []*entities.Driver
 
 	for _, load := range d.loadQueue {
-		var driver *entities.Driver
-		for _, d := range drivers {
-			if d.CanMoveLoad(load) {
-				driver = d
+		var selectedDriver *entities.Driver
+		for _, currentDriver := range drivers {
+			if currentDriver.CanMoveLoad(load) {
+				selectedDriver = currentDriver
 				break
 			}
 		}
 
-		if driver == nil {
-			driver = &entities.Driver{}
-			drivers = append(drivers, driver)
+		if selectedDriver == nil {
+			selectedDriver = entities.CreateNewDriver() 
+			drivers = append(drivers, selectedDriver)
 		}
 
-		driver.MoveLoad(load)
+		selectedDriver.MoveLoad(load)
 	}
 
   for _, driver := range drivers {
