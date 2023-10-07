@@ -10,7 +10,7 @@ type Driver struct {
 	totalTime      float64
 }
 
-func CreateNewDriver() *Driver {
+func NewDriver() *Driver {
 	return &Driver{currentPoint: Point{0, 0}, completedLoads: []*Load{}, totalTime: 0}
 }
 

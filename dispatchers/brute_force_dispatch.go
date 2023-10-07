@@ -25,7 +25,7 @@ func (d *BruteForceDispatch) SearchForRoutes() []*entities.Driver {
 		}
 
 		if selectedDriver == nil {
-			selectedDriver = entities.CreateNewDriver() 
+			selectedDriver = entities.NewDriver() 
 			drivers = append(drivers, selectedDriver)
 		}
 
