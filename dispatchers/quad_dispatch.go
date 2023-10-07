@@ -1,20 +1,20 @@
-package main
+package dispatchers 
 
 import (
 	"vehicle-routing-problem/entities"
 )
 
-type Dispatch struct {
+type QuadDispatch struct {
 	allLoads       []*entities.Load
-	completedLoads []*entities.Load
+	remainingLoads []*entities.Load
 	quadMap        *entities.QuadMap
 }
 
-func NewDispatch(loads []*entities.Load) *Dispatch {
-	return &Dispatch{loads, []*entities.Load{}, entities.NewQuadMap(loads)}
+func NewQuadDispatch(loads []*entities.Load) *QuadDispatch {
+	return &QuadDispatch{loads, []*entities.Load{}, entities.NewQuadMap(loads)}
 }
 
-func (d *Dispatch) SearchForRoutes() []*entities.Driver {
+func (d *QuadDispatch) SearchForRoutes() []*entities.Driver {
 	var drivers []*entities.Driver
 
 	for _, quad := range d.quadMap.GetChildren() {
@@ -34,6 +34,10 @@ func (d *Dispatch) SearchForRoutes() []*entities.Driver {
 
 			driver.AddLoad(load)
 		}
+	}
+
+	for _, driver := range drivers {
+		driver.ReturnToOrigin()
 	}
 
 	return drivers
