@@ -3,61 +3,58 @@ package dispatchers
 import "vehicle-routing-problem/entities"
 
 type NearestLoadDispatch struct {
-  loads map[int]*entities.Load
+	loads map[int]*entities.Load
 }
 
 func NewNearestLoadDispatch(loads []*entities.Load) *NearestLoadDispatch {
-  dispatch := &NearestLoadDispatch{loads: make(map[int]*entities.Load)}
-  for _, load := range loads {
-    dispatch.loads[load.LoadNumber] = load
-  }
+	dispatch := &NearestLoadDispatch{loads: make(map[int]*entities.Load)}
+	for _, load := range loads {
+		dispatch.loads[load.LoadNumber] = load
+	}
 
-  return dispatch
+	return dispatch
 }
 
 // This optimizes for distance between dropoff and next pickup, minimizing wasted driving.
 func (d *NearestLoadDispatch) SearchForRoutes() []*entities.Driver {
-  var drivers []*entities.Driver
-  for len(d.loads) > 0 {
-    driver := entities.NewDriver()
-    drivers = append(drivers, driver)
+	var drivers []*entities.Driver
+	for len(d.loads) > 0 {
+		driver := entities.NewDriver()
+		drivers = append(drivers, driver)
 
-    canMoveNextLoad := true
-    for canMoveNextLoad {
-      load := d.getNearestLoadToPoint(driver.GetCurrentPoint())
+		for {
+			load := d.getNearestLoadToPoint(driver)
 
-      if load == nil {
-        canMoveNextLoad = false
-        break
-      }
+			if load == nil {
+				break
+			}
 
-      if driver.CanMoveLoad(load) {
-        driver.MoveLoad(load)
-        delete(d.loads, load.LoadNumber)
-      } else {
-        canMoveNextLoad = false
-      }
+      driver.MoveLoad(load)
+      delete(d.loads, load.LoadNumber)
     }
-  }
+	}
 
-  returnAllDriversToOrigin(drivers)
+	returnAllDriversToOrigin(drivers)
 
-  return drivers
+	return drivers
 }
 
-func (d *NearestLoadDispatch) getNearestLoadToPoint(point entities.Point) *entities.Load {
-  var closestsToOrigin *entities.Load
+func (d *NearestLoadDispatch) getNearestLoadToPoint(driver *entities.Driver) *entities.Load {
+	var nearestLoad *entities.Load
 
-  for _, load := range d.loads {
-    if closestsToOrigin == nil {
-      closestsToOrigin = load
+	for _, load := range d.loads {
+    if !driver.CanMoveLoad(load) {
       continue
     }
 
-    if load.Pickup.DistanceTo(point) < closestsToOrigin.Pickup.DistanceTo(point) {
-      closestsToOrigin = load
+    if nearestLoad == nil {
+      nearestLoad = load
     }
-  }
 
-  return closestsToOrigin
+		if load.Pickup.DistanceTo(driver.GetCurrentPoint()) < nearestLoad.Pickup.DistanceTo(driver.GetCurrentPoint()) {
+			nearestLoad = load
+		}
+	}
+
+	return nearestLoad
 }
