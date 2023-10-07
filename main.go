@@ -16,7 +16,7 @@ func main() {
 	filepath := os.Args[1]
 	loads := cli.ParseLoadFile(filepath)
 
-	dispatcher := dispatchers.NewNearestDriverDispatch(loads, 400)
+	dispatcher := dispatchers.NewNearestLoadDispatch(loads)
 	drivers := dispatcher.SearchForRoutes()
 
 	totalTime := 0.0

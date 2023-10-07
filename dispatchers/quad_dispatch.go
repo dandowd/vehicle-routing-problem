@@ -6,12 +6,11 @@ import (
 
 type QuadDispatch struct {
 	allLoads       []*entities.Load
-	remainingLoads []*entities.Load
 	quadMap        *entities.QuadMap
 }
 
 func NewQuadDispatch(loads []*entities.Load) *QuadDispatch {
-	return &QuadDispatch{loads, []*entities.Load{}, entities.NewQuadMap(loads)}
+	return &QuadDispatch{loads, entities.NewQuadMap(loads)}
 }
 
 func (d *QuadDispatch) SearchForRoutes() []*entities.Driver {
@@ -36,9 +35,7 @@ func (d *QuadDispatch) SearchForRoutes() []*entities.Driver {
 		}
 	}
 
-	for _, driver := range drivers {
-		driver.ReturnToOrigin()
-	}
+	returnAllDriversToOrigin(drivers)
 
 	return drivers
 }

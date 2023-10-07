@@ -40,6 +40,8 @@ func (d *NearestLoadDispatch) SearchForRoutes() []*entities.Driver {
     }
   }
 
+  returnAllDriversToOrigin(drivers)
+
   return drivers
 }
 

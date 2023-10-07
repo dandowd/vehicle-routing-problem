@@ -5,7 +5,7 @@ import (
 )
 
 type BruteForceDispatch struct {
-	loadQueue []*entities.Load
+	loads []*entities.Load
 }
 
 func NewBruteForceDispatch(loads []*entities.Load) *BruteForceDispatch {
@@ -15,7 +15,7 @@ func NewBruteForceDispatch(loads []*entities.Load) *BruteForceDispatch {
 func (d *BruteForceDispatch) SearchForRoutes() []*entities.Driver {
 	var drivers []*entities.Driver
 
-	for _, load := range d.loadQueue {
+	for _, load := range d.loads {
 		var selectedDriver *entities.Driver
 		for _, currentDriver := range drivers {
 			if currentDriver.CanMoveLoad(load) {
@@ -32,9 +32,7 @@ func (d *BruteForceDispatch) SearchForRoutes() []*entities.Driver {
 		selectedDriver.MoveLoad(load)
 	}
 
-  for _, driver := range drivers {
-    driver.ReturnToOrigin()
-  }
+	returnAllDriversToOrigin(drivers)
 
 	return drivers
 }
