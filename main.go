@@ -8,6 +8,11 @@ import (
 )
 
 func main() {
+	if len(os.Args) != 2 {
+		fmt.Println("This program takes exactly one argument, the path to the problem file.")
+		os.Exit(1)
+	}
+
 	filepath := os.Args[1]
 	loads := cli.ParseLoadFile(filepath)
 
