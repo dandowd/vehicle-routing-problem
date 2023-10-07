@@ -36,6 +36,10 @@ func (d *Driver) CanMoveLoad(load *Load) bool {
 	return d.totalTime+d.currentPoint.DistanceTo(load.Pickup)+load.GetTime()+load.Dropoff.DistanceTo(Point{0, 0}) <= MAX_DRIVE_TIME
 }
 
+func (d *Driver) DistanceTo(p Point) float64 {
+	return d.currentPoint.DistanceTo(p)
+}
+
 func (d *Driver) ReturnToOrigin() {
 	d.totalTime += d.currentPoint.DistanceTo(Point{0, 0})
 	d.currentPoint = Point{0, 0}
