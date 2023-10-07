@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"vehicle-routing-problem/cli"
 	"vehicle-routing-problem/dispatchers"
 )
 
 func main() {
-	loads := cli.ParseLoadFile("/Users/danieldowd/Downloads/problem12.txt")
-	dispatcher := dispatchers.NewBruteForceDispatch(loads)
+	filepath := os.Args[1]
+	loads := cli.ParseLoadFile(filepath)
+
+	dispatcher := dispatchers.NewNearestDriverDispatch(loads, 400)
 	drivers := dispatcher.SearchForRoutes()
 
 	totalTime := 0.0
