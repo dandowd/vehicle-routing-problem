@@ -16,7 +16,7 @@ func main() {
 		totalTime += driver.GetTotalTime()
 	}
 
-	total := 500*len(drivers) + int(totalTime)
+	total := float64(500*len(drivers)) + totalTime
 	cli.FormatDrivers(drivers)
 	fmt.Println("Total cost:", total)
 }
