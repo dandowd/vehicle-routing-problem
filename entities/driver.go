@@ -63,5 +63,10 @@ func (d *Driver) MakeCopy() *Driver {
 		newDriver.completedLoads[k] = v
 	}
 	newDriver.totalTime = d.totalTime
+
+	// TODO: check why copy will not work
+	for i := range d.path {
+		newDriver.path = append(newDriver.path, d.path[i])
+	}
 	return newDriver
 }
