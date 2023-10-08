@@ -23,7 +23,6 @@ func (d *NearestLoadDFSDispatch) SearchForRoutes() []*entities.Driver {
 	var drivers []*entities.Driver
 	for len(d.loads) > 0 {
 		_, driver := d.search(entities.NewDriver(), 0)
-		driver.ReturnToOrigin()
 		d.removeDriverLoads(driver)
 		drivers = append(drivers, driver)
 	}
@@ -47,9 +46,6 @@ func (d *NearestLoadDFSDispatch) search(driver *entities.Driver, travelCosts flo
 		copiedDriver.MoveLoad(load)
 		subCosts, subDriver := d.search(copiedDriver, travelCosts+driver.DistanceTo(load.Pickup))
 
-		// include the drive home in the costs
-		subCosts += copiedDriver.DistanceTo(entities.Point{X: 0, Y: 0})
-
 		if subCosts < bestTravelCosts {
 			bestTravelCosts = subCosts
 			bestDriver = subDriver
@@ -57,7 +53,10 @@ func (d *NearestLoadDFSDispatch) search(driver *entities.Driver, travelCosts flo
 	}
 
 	if bestTravelCosts == math.MaxFloat64 {
-		return travelCosts, bestDriver
+		completedDriver := driver.MakeCopy()
+		completedDriver.ReturnToOrigin()
+
+		return travelCosts, completedDriver
 	}
 
 	return bestTravelCosts, bestDriver
