@@ -26,14 +26,17 @@ func (d *NearestLoadDFSDispatch) search(driver *entities.Driver, travelCosts flo
   bestDriver := driver.MakeCopy()
   bestCosts := math.MaxFloat64
 
-  for _, loadMap := range nearestLoads {
-    if !driver.CanMoveLoad(loadMap) {
+  for _, load := range nearestLoads {
+    if !driver.CanMoveLoad(load) {
       continue
     }
 
-    costs, subPath := d.search(driver.MakeCopy(), travelCosts)
+		copiedDriver := driver.MakeCopy()
+		copiedDriver.MoveLoad(load)
+    costs, subPath := d.search(copiedDriver, travelCosts)
 
     if costs < bestCosts {
+			bestCosts = costs
       bestDriver = subPath
     }
   }

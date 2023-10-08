@@ -31,7 +31,7 @@ func TestGetNearestLoadPickups(t *testing.T) {
     entities.NewLoad(6, entities.Point{X: 5, Y: 5}, entities.Point{X: 6, Y: 6}),
   }
 
-  dispatch := NewNearestLoadDFSDispatch(loads, 1)
+  dispatch := NewNearestLoadDFSDispatch(loads, 4)
 
   nearestLoads := dispatch.getNearestLoads(entities.NewDriver())
 
