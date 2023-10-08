@@ -14,9 +14,9 @@ func TestSearchShouldReturnBestPath(t *testing.T) {
     entities.NewLoad(4, entities.Point{X: 4, Y: 4}, entities.Point{X: 5, Y: 5}),
   }
 
-  dispatch := NewNearestLoadDFSDispatch(loads, 4)
+  dispatch := NewNearestLoadDFSDispatch(loads, 1)
 
-  cost, paths := dispatch.search(entities.Point{X: 0, Y: 0}, 0, 0, make(map[int]*entities.Load))
+  cost, paths := dispatch.search(entities.NewDriver(), 0)
 
   fmt.Println(cost, paths)
 }
@@ -31,9 +31,9 @@ func TestGetNearestLoadPickups(t *testing.T) {
     entities.NewLoad(6, entities.Point{X: 5, Y: 5}, entities.Point{X: 6, Y: 6}),
   }
 
-  dispatch := NewNearestLoadDFSDispatch(loads, 4)
+  dispatch := NewNearestLoadDFSDispatch(loads, 1)
 
-  nearestLoads := dispatch.getNearestLoads(entities.Point{X: 0, Y: 0}, make(map[int]*entities.Load))
+  nearestLoads := dispatch.getNearestLoads(entities.NewDriver())
 
   if len(nearestLoads) != 4 {
     t.Errorf("Expected 4 nearest loads, got %d", len(nearestLoads))
