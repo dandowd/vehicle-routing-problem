@@ -24,7 +24,10 @@ func (d *NearestLoadDFSDispatch) SearchForRoutes() []*entities.Driver {
 	for len(d.loads) > 0 {
 		_, driver := d.search(entities.NewDriver(), 0)
 		d.removeDriverLoads(driver)
-		drivers = append(drivers, driver)
+
+		if len(driver.GetCompletedLoads()) != 0 {
+			drivers = append(drivers, driver)
+		}
 	}
 
 	return drivers
