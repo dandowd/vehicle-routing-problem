@@ -1,7 +1,6 @@
 package dispatchers
 
 import (
-	"fmt"
 	"math"
 	"vehicle-routing-problem/entities"
 )
