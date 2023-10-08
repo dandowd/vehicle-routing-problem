@@ -29,10 +29,10 @@ func (d *NearestDriverDispatch) SearchForRoutes() []*entities.Driver {
 				continue
 			}
 
-      if closestDriver == nil {
-        closestDriver = driver
-        continue
-      }
+			if closestDriver == nil {
+				closestDriver = driver
+				continue
+			}
 
 			if distToPickup > closestDriver.DistanceTo(load.Pickup) {
 				continue
@@ -41,10 +41,10 @@ func (d *NearestDriverDispatch) SearchForRoutes() []*entities.Driver {
 			closestDriver = driver
 		}
 
-    if closestDriver == nil {
-      closestDriver = entities.NewDriver()
-      drivers = append(drivers, closestDriver)
-    }
+		if closestDriver == nil {
+			closestDriver = entities.NewDriver()
+			drivers = append(drivers, closestDriver)
+		}
 
 		closestDriver.MoveLoad(load)
 	}

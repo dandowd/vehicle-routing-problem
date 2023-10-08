@@ -7,9 +7,9 @@ import (
 
 func TestSearchForRoutesShouldReturnPathWithLeastCostsWithMultipleDrivers(t *testing.T) {
 	loads := []*entities.Load{
-		entities.NewLoad(1, entities.Point{X: 5, Y: 0}, entities.Point{X: 12 , Y: 0}),
-		entities.NewLoad(2, entities.Point{X: 6, Y: 0}, entities.Point{X: 2 , Y: 0}),
-		entities.NewLoad(3, entities.Point{X: 2, Y: 0}, entities.Point{X: 3 , Y: 0}),
+		entities.NewLoad(1, entities.Point{X: 5, Y: 0}, entities.Point{X: 12, Y: 0}),
+		entities.NewLoad(2, entities.Point{X: 6, Y: 0}, entities.Point{X: 2, Y: 0}),
+		entities.NewLoad(3, entities.Point{X: 2, Y: 0}, entities.Point{X: 3, Y: 0}),
 	}
 
 	dispatch := NewNearestLoadDFSDispatch(loads, 4)
@@ -33,9 +33,9 @@ func TestSearchForRoutesShouldReturnPathWithLeastCostsWithMultipleDrivers(t *tes
 
 func TestSearchForRoutesShouldReturnPathWithLeastTravelCosts(t *testing.T) {
 	loads := []*entities.Load{
-		entities.NewLoad(1, entities.Point{X: 5, Y: 0}, entities.Point{X: 12 , Y: 0}),
-		entities.NewLoad(2, entities.Point{X: 6, Y: 0}, entities.Point{X: 2 , Y: 0}),
-		entities.NewLoad(3, entities.Point{X: 2, Y: 0}, entities.Point{X: 3 , Y: 0}),
+		entities.NewLoad(1, entities.Point{X: 5, Y: 0}, entities.Point{X: 12, Y: 0}),
+		entities.NewLoad(2, entities.Point{X: 6, Y: 0}, entities.Point{X: 2, Y: 0}),
+		entities.NewLoad(3, entities.Point{X: 2, Y: 0}, entities.Point{X: 3, Y: 0}),
 	}
 
 	dispatch := NewNearestLoadDFSDispatch(loads, 4)
@@ -59,8 +59,8 @@ func TestSearchForRoutesShouldReturnPathWithLeastTravelCosts(t *testing.T) {
 
 func TestSearchForRoutesShouldReturnPathWithLeastTravelCosts2(t *testing.T) {
 	loads := []*entities.Load{
-		entities.NewLoad(1, entities.Point{X: 5, Y: 0}, entities.Point{X: 12 , Y: 0}),
-		entities.NewLoad(2, entities.Point{X: 6, Y: 0}, entities.Point{X: 4 , Y: 0}),
+		entities.NewLoad(1, entities.Point{X: 5, Y: 0}, entities.Point{X: 12, Y: 0}),
+		entities.NewLoad(2, entities.Point{X: 6, Y: 0}, entities.Point{X: 4, Y: 0}),
 	}
 
 	dispatch := NewNearestLoadDFSDispatch(loads, 4)

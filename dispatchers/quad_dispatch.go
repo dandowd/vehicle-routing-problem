@@ -1,12 +1,12 @@
-package dispatchers 
+package dispatchers
 
 import (
 	"vehicle-routing-problem/entities"
 )
 
 type QuadDispatch struct {
-	allLoads       []*entities.Load
-	quadMap        *entities.QuadMap
+	allLoads []*entities.Load
+	quadMap  *entities.QuadMap
 }
 
 func NewQuadDispatch(loads []*entities.Load) *QuadDispatch {

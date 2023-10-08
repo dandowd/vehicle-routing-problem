@@ -57,7 +57,7 @@ func (m *QuadMap) GetChildren() [4]*QuadMap {
 	return m.subMaps
 }
 
-func (m* QuadMap) GetLoads() []*Load {
+func (m *QuadMap) GetLoads() []*Load {
 	return m.loads
 }
 

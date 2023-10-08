@@ -29,9 +29,9 @@ func (d *NearestLoadDispatch) SearchForRoutes() []*entities.Driver {
 				break
 			}
 
-      driver.MoveLoad(load)
-      delete(d.loads, load.LoadNumber)
-    }
+			driver.MoveLoad(load)
+			delete(d.loads, load.LoadNumber)
+		}
 	}
 
 	returnAllDriversToOrigin(drivers)
@@ -43,13 +43,13 @@ func (d *NearestLoadDispatch) getNearestLoadToPoint(driver *entities.Driver) *en
 	var nearestLoad *entities.Load
 
 	for _, load := range d.loads {
-    if !driver.CanMoveLoad(load) {
-      continue
-    }
+		if !driver.CanMoveLoad(load) {
+			continue
+		}
 
-    if nearestLoad == nil {
-      nearestLoad = load
-    }
+		if nearestLoad == nil {
+			nearestLoad = load
+		}
 
 		if load.Pickup.DistanceTo(driver.GetCurrentPoint()) < nearestLoad.Pickup.DistanceTo(driver.GetCurrentPoint()) {
 			nearestLoad = load

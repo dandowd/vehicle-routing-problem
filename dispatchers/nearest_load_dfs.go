@@ -46,7 +46,7 @@ func (d *NearestLoadDFSDispatch) search(driver *entities.Driver, travelCosts flo
 		copiedDriver := driver.MakeCopy()
 		copiedDriver.MoveLoad(load)
 		subCosts, subDriver := d.search(copiedDriver, travelCosts+driver.DistanceTo(load.Pickup))
-		
+
 		// include the drive home in the costs
 		subCosts += copiedDriver.DistanceTo(entities.Point{X: 0, Y: 0})
 
