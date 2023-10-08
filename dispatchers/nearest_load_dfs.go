@@ -1,6 +1,7 @@
 package dispatchers
 
 import (
+	"fmt"
 	"math"
 	"vehicle-routing-problem/entities"
 )
@@ -19,13 +20,25 @@ func NewNearestLoadDFSDispatch(loads []*entities.Load, numberOfAdjacent int) *Ne
 	return dispatch
 }
 
+func (d *NearestLoadDFSDispatch) SearchForRoutes() []*entities.Driver {
+	var drivers []*entities.Driver
+	for len(d.loads) > 0 {
+		_, driver := d.search(entities.NewDriver(), 0)
+		driver.ReturnToOrigin()
+		d.removeDriverLoads(driver)
+		drivers = append(drivers, driver)
+	}
+
+	return drivers
+}
+
 // Recursively check paths until the path with the least waste is found
 // Base case: once a driver reaches a node with all adjacent nodes being unable to be moved
 func (d *NearestLoadDFSDispatch) search(driver *entities.Driver, travelCosts float64) (float64, *entities.Driver) {
-  nearestLoads := d.getNearestLoads(driver)
-  bestDriver := driver.MakeCopy()
-  bestCosts := math.MaxFloat64
+  bestDriver := driver
+  bestTravelCosts := math.MaxFloat64
 
+  nearestLoads := d.getNearestLoads(driver)
   for _, load := range nearestLoads {
     if !driver.CanMoveLoad(load) {
       continue
@@ -33,19 +46,19 @@ func (d *NearestLoadDFSDispatch) search(driver *entities.Driver, travelCosts flo
 
 		copiedDriver := driver.MakeCopy()
 		copiedDriver.MoveLoad(load)
-    costs, subPath := d.search(copiedDriver, travelCosts)
+    subCosts, subDriver := d.search(copiedDriver, travelCosts + driver.DistanceTo(load.Pickup))
 
-    if costs < bestCosts {
-			bestCosts = costs
-      bestDriver = subPath
+    if subCosts < bestTravelCosts {
+			bestTravelCosts = subCosts
+      bestDriver = subDriver
     }
   }
 
-  if bestCosts == math.MaxFloat64 {
+  if bestTravelCosts == math.MaxFloat64 {
     return travelCosts, bestDriver
   }
 
-  return travelCosts + bestCosts, bestDriver
+  return bestTravelCosts, bestDriver
 }
 
 func (d *NearestLoadDFSDispatch) getNearestLoads(driver *entities.Driver) []*entities.Load {
@@ -73,10 +86,8 @@ func (d *NearestLoadDFSDispatch) getNearestLoads(driver *entities.Driver) []*ent
 	return nearestLoads
 }
 
-func copyPath(path map[int]*entities.Load) map[int]*entities.Load {
-  newPath := make(map[int]*entities.Load)
-  for k, v := range path {
-    newPath[k] = v
-  }
-  return newPath
+func (d *NearestLoadDFSDispatch) removeDriverLoads(driver *entities.Driver) {
+	for _, load := range driver.GetCompletedLoads() {
+		delete(d.loads, load.LoadNumber)
+	}
 }
