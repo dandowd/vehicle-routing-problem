@@ -34,30 +34,33 @@ func (d *NearestLoadDFSDispatch) SearchForRoutes() []*entities.Driver {
 // Recursively check paths until the path with the least waste is found
 // Base case: once a driver reaches a node with all adjacent nodes being unable to be moved
 func (d *NearestLoadDFSDispatch) search(driver *entities.Driver, travelCosts float64) (float64, *entities.Driver) {
-  bestDriver := driver
-  bestTravelCosts := math.MaxFloat64
+	bestDriver := driver
+	bestTravelCosts := math.MaxFloat64
 
-  nearestLoads := d.getNearestLoads(driver)
-  for _, load := range nearestLoads {
-    if !driver.CanMoveLoad(load) {
-      continue
-    }
+	nearestLoads := d.getNearestLoads(driver)
+	for _, load := range nearestLoads {
+		if !driver.CanMoveLoad(load) {
+			continue
+		}
 
 		copiedDriver := driver.MakeCopy()
 		copiedDriver.MoveLoad(load)
-    subCosts, subDriver := d.search(copiedDriver, travelCosts + driver.DistanceTo(load.Pickup))
+		subCosts, subDriver := d.search(copiedDriver, travelCosts+driver.DistanceTo(load.Pickup))
+		
+		// include the drive home in the costs
+		subCosts += copiedDriver.DistanceTo(entities.Point{X: 0, Y: 0})
 
-    if subCosts < bestTravelCosts {
+		if subCosts < bestTravelCosts {
 			bestTravelCosts = subCosts
-      bestDriver = subDriver
-    }
-  }
+			bestDriver = subDriver
+		}
+	}
 
-  if bestTravelCosts == math.MaxFloat64 {
-    return travelCosts, bestDriver
-  }
+	if bestTravelCosts == math.MaxFloat64 {
+		return travelCosts, bestDriver
+	}
 
-  return bestTravelCosts, bestDriver
+	return bestTravelCosts, bestDriver
 }
 
 func (d *NearestLoadDFSDispatch) getNearestLoads(driver *entities.Driver) []*entities.Load {
@@ -75,10 +78,10 @@ func (d *NearestLoadDFSDispatch) getNearestLoads(driver *entities.Driver) []*ent
 		newDist := driver.DistanceTo(load.Pickup)
 
 		for i, currentNearest := range nearestLoads {
-      currentDist := driver.DistanceTo(currentNearest.Pickup)
+			currentDist := driver.DistanceTo(currentNearest.Pickup)
 			if newDist < currentDist {
 				nearestLoads[i] = load
-      }
+			}
 		}
 	}
 
