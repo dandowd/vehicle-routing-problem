@@ -14,7 +14,7 @@ func TestDriverShouldNotBeAbleToPickup(t *testing.T) {
 }
 
 func TestMoveLoadShouldCorrectlyAddTime(t *testing.T) {
-  driver := &Driver{currentPoint: Point{X: 0, Y: 0}}
+  driver := &Driver{currentPoint: Point{X: 0, Y: 0}, completedLoads: make(map[int]*Load)}
   load := &Load{Pickup: Point{X: 0, Y: 10}, Dropoff: Point{X: 0, Y: 15}}
 
   driver.MoveLoad(load)
@@ -25,7 +25,7 @@ func TestMoveLoadShouldCorrectlyAddTime(t *testing.T) {
 }
 
 func TestDriverRoundTripShouldAddCorrectly(t *testing.T) {
-  driver := &Driver{currentPoint: Point{X: 0, Y: 0}}
+  driver := &Driver{currentPoint: Point{X: 0, Y: 0}, completedLoads: make(map[int]*Load)}
   load := &Load{Pickup: Point{X: 0, Y: 10}, Dropoff: Point{X: 0, Y: 15}}
 
   driver.MoveLoad(load)
@@ -37,7 +37,7 @@ func TestDriverRoundTripShouldAddCorrectly(t *testing.T) {
 }
 
 func TestCanMoveLoadShouldReturnFalseIfTheRoundTripIsTooLong(t *testing.T) {
-  driver := &Driver{currentPoint: Point{X: 0, Y: 0}}
+  driver := &Driver{currentPoint: Point{X: 0, Y: 0}, completedLoads: make(map[int]*Load)}
   load := &Load{Pickup: Point{X: 0, Y: 360}, Dropoff: Point{X: 0, Y: 15}}
   loadTwo := &Load{Pickup: Point{X: 0, Y: 360}, Dropoff: Point{X: 0, Y: 15}}
 

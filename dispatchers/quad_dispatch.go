@@ -27,7 +27,7 @@ func (d *QuadDispatch) SearchForRoutes() []*entities.Driver {
 			}
 
 			if driver == nil {
-				driver = &entities.Driver{}
+				driver = entities.NewDriver()
 				drivers = append(drivers, driver)
 			}
 
