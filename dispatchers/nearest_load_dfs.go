@@ -11,7 +11,7 @@ type NearestLoadDFSDispatch struct {
 }
 
 func NewNearestLoadDFSDispatch(loads []*entities.Load, numberOfAdjacent int) *NearestLoadDFSDispatch {
-	dispatch := &NearestLoadDFSDispatch{loads: make(map[int]*entities.Load)}
+	dispatch := &NearestLoadDFSDispatch{loads: make(map[int]*entities.Load), numberOfAdjacent: numberOfAdjacent}
 	for _, load := range loads {
 		dispatch.loads[load.LoadNumber] = load
 	}
@@ -60,12 +60,12 @@ func (d *NearestLoadDFSDispatch) getNearestLoads(point entities.Point, path map[
 			continue
 		}
 
-		dist := point.DistanceTo(load.Pickup)
-		if len(nearestLoads) <= d.numberOfAdjacent {
+		if len(nearestLoads) < d.numberOfAdjacent {
 			nearestLoads = append(nearestLoads, load)
 			continue
 		}
 
+		dist := point.DistanceTo(load.Pickup)
 		for i, currentNearest := range nearestLoads {
       currentDist := point.DistanceTo(currentNearest.Pickup)
 			if dist < currentDist {
