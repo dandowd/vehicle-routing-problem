@@ -16,15 +16,7 @@ func main() {
 	filepath := os.Args[1]
 	loads := cli.ParseLoadFile(filepath)
 
-	dispatcher := dispatchers.NewNearestLoadDispatch(loads)
-	drivers := dispatcher.SearchForRoutes()
+	drivers := dispatchers.NewNearestLoadDispatch(loads).SearchForRoutes()
 
-	totalTime := 0.0
-	for _, driver := range drivers {
-		totalTime += driver.GetTotalTime()
-	}
-
-	total := float64(500*len(drivers)) + totalTime
 	cli.FormatDrivers(drivers)
-	fmt.Println("Total cost:", total)
 }
