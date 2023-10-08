@@ -35,7 +35,7 @@ func (d *NearestLoadDFSDispatch) SearchForRoutes() []*entities.Driver {
 
 // Recursively check paths until the path with the least waste is found
 // Base case: once a driver reaches a node with all adjacent nodes being unable to be moved
-func (d *NearestLoadDFSDispatch) search(driver *entities.Driver, travelCosts float64) (float64, *entities.Driver) {
+func (d *NearestLoadDFSDispatch) search(driver *entities.Driver, betweenTravelTime float64) (float64, *entities.Driver) {
 	bestDriver := driver
 	bestTravelCosts := math.MaxFloat64
 
@@ -47,7 +47,7 @@ func (d *NearestLoadDFSDispatch) search(driver *entities.Driver, travelCosts flo
 
 		copiedDriver := driver.MakeCopy()
 		copiedDriver.MoveLoad(load)
-		subCosts, subDriver := d.search(copiedDriver, travelCosts+driver.DistanceTo(load.Pickup))
+		subCosts, subDriver := d.search(copiedDriver, betweenTravelTime+driver.DistanceTo(load.Pickup))
 
 		if subCosts < bestTravelCosts {
 			bestTravelCosts = subCosts
@@ -59,7 +59,7 @@ func (d *NearestLoadDFSDispatch) search(driver *entities.Driver, travelCosts flo
 		completedDriver := driver.MakeCopy()
 		completedDriver.ReturnToOrigin()
 
-		return travelCosts, completedDriver
+		return betweenTravelTime, completedDriver
 	}
 
 	return bestTravelCosts, bestDriver
