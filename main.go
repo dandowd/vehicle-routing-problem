@@ -26,7 +26,6 @@ func RunDispatchers(startingLoads []*entities.Load) []*entities.Driver {
 	bestDrivers := dispatchers.NewNearestLoadDispatch(startingLoads).SearchForRoutes()
 	bestTotalCost := getTotalCost(bestDrivers)
 
-	
 	driverUtil := dispatchers.NewDriverUtilizationDispatch(startingLoads).SearchForRoutes()
 	if getTotalCost(driverUtil) < bestTotalCost {
 		bestDrivers = driverUtil
