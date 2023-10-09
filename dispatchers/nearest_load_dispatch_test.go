@@ -19,7 +19,7 @@ func TestNearestLoadDispatchShouldPickupInCorrectOrder(t *testing.T) {
 		t.Errorf("Expected 1 driver, got %d", len(drivers))
 	}
 
-	loadTwo := drivers[0].GetCompletedLoads()[1]
+	loadTwo := drivers[0].GetPath()[1]
 
 	if loadTwo.LoadNumber != 3 {
 		t.Errorf("The second load to be picked up should be 3, got %d", loadTwo.LoadNumber)

@@ -16,7 +16,7 @@ func TestSearchForRoutesShouldReturnPathWithLeastTravelCosts(t *testing.T) {
 
 	drivers := dispatch.SearchForRoutes()
 
-	path := drivers[0].GetCompletedLoads()
+	path := drivers[0].GetPath()
 
 	if path[0].LoadNumber != 2 {
 		t.Errorf("Expected first load to be 2, got %d", path[0].LoadNumber)

@@ -24,7 +24,7 @@ func (d *Driver) GetCurrentPoint() Point {
 	return d.currentPoint
 }
 
-func (d *Driver) GetCompletedLoads() []*Load {
+func (d *Driver) GetPath() []*Load {
 	return d.path
 }
 

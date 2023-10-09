@@ -7,14 +7,14 @@ import (
 
 func PrintRoutes(drivers []*entities.Driver) {
 	for _, driver := range drivers {
-		fmt.Println(driver.GetCompletedLoads())
+		fmt.Println(driver.GetPath())
 	}
 }
 
 func FormatDrivers(drivers []*entities.Driver) {
 	for _, driver := range drivers {
 		driverLoads := "["
-		for _, load := range driver.GetCompletedLoads() {
+		for _, load := range driver.GetPath() {
 			driverLoads += fmt.Sprintf("%v,", load.LoadNumber)
 		}
 

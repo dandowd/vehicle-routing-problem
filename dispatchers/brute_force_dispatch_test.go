@@ -20,7 +20,7 @@ func TestBruteForceShouldTravelToAllLoads(t *testing.T) {
 		t.Error("Expected 1 driver, got ", len(drivers))
 	}
 
-	if len(drivers[0].GetCompletedLoads()) != 2 {
-		t.Error("Expected 2 completed loads, got ", len(drivers[0].GetCompletedLoads()))
+	if len(drivers[0].GetPath()) != 2 {
+		t.Error("Expected 2 completed loads, got ", len(drivers[0].GetPath()))
 	}
 }

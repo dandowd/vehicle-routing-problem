@@ -18,8 +18,8 @@ func TestSearchForRoutesShouldSendOneTruck(t *testing.T) {
 		t.Error("Expected 1 driver, got ", len(drivers))
 	}
 
-	if len(drivers[0].GetCompletedLoads()) != 1 {
-		t.Error("Expected 1 completed load, got ", len(drivers[0].GetCompletedLoads()))
+	if len(drivers[0].GetPath()) != 1 {
+		t.Error("Expected 1 completed load, got ", len(drivers[0].GetPath()))
 	}
 }
 
@@ -38,11 +38,11 @@ func TestSearchForRoutesShouldSendTwoTrucks(t *testing.T) {
 		t.Error("Expected 2 drivers, got ", len(drivers))
 	}
 
-	if len(drivers[0].GetCompletedLoads()) != 1 {
-		t.Error("Expected 1 completed load, got ", len(drivers[0].GetCompletedLoads()))
+	if len(drivers[0].GetPath()) != 1 {
+		t.Error("Expected 1 completed load, got ", len(drivers[0].GetPath()))
 	}
 
-	if len(drivers[1].GetCompletedLoads()) != 1 {
-		t.Error("Expected 1 completed load, got ", len(drivers[1].GetCompletedLoads()))
+	if len(drivers[1].GetPath()) != 1 {
+		t.Error("Expected 1 completed load, got ", len(drivers[1].GetPath()))
 	}
 }
