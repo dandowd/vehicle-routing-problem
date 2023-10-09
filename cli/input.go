@@ -19,7 +19,7 @@ func ParseLoadFile(filepath string) []*entities.Load {
 
 	var loads []*entities.Load
 
-	// skip first line
+	// skip first line with header
 	scanner.Scan()
 
 	for scanner.Scan() {

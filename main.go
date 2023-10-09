@@ -5,6 +5,7 @@ import (
 	"os"
 	"vehicle-routing-problem/cli"
 	"vehicle-routing-problem/dispatchers"
+	"vehicle-routing-problem/entities"
 )
 
 func main() {
@@ -19,4 +20,27 @@ func main() {
 	drivers := dispatchers.NewNearestLoadDispatch(loads).SearchForRoutes()
 
 	cli.FormatDrivers(drivers)
+}
+
+func RunDispatchers(loads []*entities.Load) []*entities.Driver {
+	dispatchers := []dispatchers.Dispatcher{
+		dispatchers.NewDriverUtilizationDispatcher(loads),
+		dispatchers.NewNearestLoadDispatch(loads),
+	}
+
+	var bestDrivers []*entities.Driver
+	for _, dispatcher := range dispatchers {
+		drivers := dispatcher.SearchForRoutes()
+
+		totalCost := 0.0
+		for _, driver := range drivers {
+			totalCost += driver.GetTotalTime()
+		}
+
+		totalCost += 500 * float64(len(drivers))
+
+		fmt.Printf("Total cost: %f, %T\n", totalCost, dispatcher)
+	}
+
+	return bestDrivers
 }

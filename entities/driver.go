@@ -1,7 +1,5 @@
 package entities
 
-import "fmt"
-
 const MAX_DRIVE_TIME = 720
 
 type Driver struct {
@@ -20,10 +18,6 @@ func (d *Driver) MoveLoad(l *Load) {
 	d.currentPoint = l.Dropoff
 	d.completedLoads[l.LoadNumber] = l
 	d.path = append(d.path, l)
-
-	if d.currentPoint.DistanceTo(Point{0, 0}) > MAX_DRIVE_TIME {
-		fmt.Println("Driver has exceeded max drive time")
-	}
 }
 
 func (d *Driver) GetCurrentPoint() Point {
