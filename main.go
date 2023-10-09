@@ -17,30 +17,54 @@ func main() {
 	filepath := os.Args[1]
 	loads := cli.ParseLoadFile(filepath)
 
-	drivers := dispatchers.NewNearestLoadDispatch(loads).SearchForRoutes()
+	drivers := RunDispatchers(loads)
 
 	cli.FormatDrivers(drivers)
 }
 
-func RunDispatchers(loads []*entities.Load) []*entities.Driver {
-	dispatchers := []dispatchers.Dispatcher{
-		dispatchers.NewDriverUtilizationDispatcher(loads),
-		dispatchers.NewNearestLoadDispatch(loads),
+func RunDispatchers(startingLoads []*entities.Load) []*entities.Driver {
+	bestDrivers := dispatchers.NewNearestLoadDispatch(startingLoads).SearchForRoutes()
+	bestTotalCost := getTotalCost(bestDrivers)
+
+	
+	driverUtil := dispatchers.NewDriverUtilizationDispatch(startingLoads).SearchForRoutes()
+	if getTotalCost(driverUtil) < bestTotalCost {
+		bestDrivers = driverUtil
 	}
 
-	var bestDrivers []*entities.Driver
-	for _, dispatcher := range dispatchers {
-		drivers := dispatcher.SearchForRoutes()
-
-		totalCost := 0.0
-		for _, driver := range drivers {
-			totalCost += driver.GetTotalTime()
+	for i := 0; i < len(startingLoads); i++ {
+		loads := rotateSlice(startingLoads, i)
+		dispatchers := []dispatchers.Dispatcher{
+			dispatchers.NewBruteForceDispatch(loads),
+			dispatchers.NewNearestDriverDispatch(loads, 400),
 		}
 
-		totalCost += 500 * float64(len(drivers))
+		for _, dispatcher := range dispatchers {
+			drivers := dispatcher.SearchForRoutes()
 
-		fmt.Printf("Total cost: %f, %T\n", totalCost, dispatcher)
+			totalCost := getTotalCost(drivers)
+
+			if totalCost < bestTotalCost || bestTotalCost == 0 {
+				bestTotalCost = totalCost
+				bestDrivers = drivers
+			}
+		}
 	}
 
 	return bestDrivers
+}
+
+func getTotalCost(drivers []*entities.Driver) float64 {
+	totalCost := 0.0
+	for _, driver := range drivers {
+		totalCost += driver.GetTotalTime()
+	}
+
+	totalCost += 500 * float64(len(drivers))
+
+	return totalCost
+}
+
+func rotateSlice(slice []*entities.Load, n int) []*entities.Load {
+	return append(slice[n:], slice[:n]...)
 }
