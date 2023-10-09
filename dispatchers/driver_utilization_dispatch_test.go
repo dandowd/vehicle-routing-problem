@@ -12,7 +12,7 @@ func TestDriverUtilizationDispatcherShouldMaxDriverUse(t *testing.T) {
 		entities.NewLoad(3, entities.Point{X: 0, Y: 0}, entities.Point{X: 260, Y: 0}),
 	}
 
-	drivers := NewDriverUtilizationDispatcher(loads).SearchForRoutes()
+	drivers := NewDriverUtilizationDispatch(loads).SearchForRoutes()
 
 	if len(drivers) != 2 {
 		t.Errorf("Expected 2 driver, got %d", len(drivers))
