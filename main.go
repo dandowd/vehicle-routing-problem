@@ -6,6 +6,7 @@ import (
 	"vehicle-routing-problem/cli"
 	"vehicle-routing-problem/dispatchers"
 	"vehicle-routing-problem/entities"
+	"vehicle-routing-problem/strategies"
 )
 
 func main() {
@@ -51,6 +52,37 @@ func RunDispatchers(startingLoads []*entities.Load) []*entities.Driver {
 	}
 
 	return bestDrivers
+}
+
+func RunStrategies(startingLoads []*entities.Load) []*entities.Driver {
+	loads := NewLoadMap(startingLoads) 
+	drivers := []*entities.Driver{}
+
+	for len(loads) > 0 {
+		driver := entities.NewDriver()
+		drivers = append(drivers, driver)
+
+		for len(loads) > 0 {
+			load := strategies.NearestLoadStrategy(driver, loads)
+			if load == nil {
+				break
+			}
+
+			driver.MoveLoad(load)
+			delete(loads, load.LoadNumber)
+		}
+	}
+
+	return drivers
+}
+
+func NewLoadMap(loads []*entities.Load) map[int]*entities.Load {
+	loadMap := map[int]*entities.Load{}
+	for _, load := range loads {
+		loadMap[load.LoadNumber] = load
+	}
+
+	return loadMap
 }
 
 func getTotalCost(drivers []*entities.Driver) float64 {
