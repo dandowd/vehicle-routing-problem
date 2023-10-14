@@ -18,7 +18,7 @@ func main() {
 	loads := cli.ParseLoadFile(filepath)
 
 	drivers := RunDispatchers(loads)
-
+	fmt.Println("Total cost:", getTotalCost(drivers))
 	cli.FormatDrivers(drivers)
 }
 
