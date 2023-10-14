@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"math/rand"
 	"os"
+	"time"
 	"vehicle-routing-problem/cli"
 	"vehicle-routing-problem/dispatchers"
 	"vehicle-routing-problem/entities"
@@ -23,35 +26,73 @@ func main() {
 	cli.Logger.Println(cli.FormatPath(drivers))
 }
 
-func RunDispatchers(startingLoads []*entities.Load) []*entities.Driver {
+func annealing(startingLoads []*entities.Load) []*entities.Driver {
 	bestDrivers := dispatchers.NewNearestLoadDispatch(startingLoads).SearchForRoutes()
-	bestTotalCost := getTotalCost(bestDrivers)
+	totalCost := getTotalCost(bestDrivers)
+	path := combineDriverLoads(bestDrivers)
 
-	driverUtil := dispatchers.NewDriverUtilizationDispatch(startingLoads).SearchForRoutes()
-	if getTotalCost(driverUtil) < bestTotalCost {
-		bestDrivers = driverUtil
-	}
+	for t := 1000.00; t > 0; t -= 0.01 {
+		randomSwap(path)
 
-	for i := 0; i < len(startingLoads); i++ {
-		loads := rotateSlice(startingLoads, i)
-		dispatchers := []dispatchers.Dispatcher{
-			dispatchers.NewBruteForceDispatch(loads),
-			dispatchers.NewNearestDriverDispatch(loads, 400),
+		newDrivers := driveRoute(path)
+		newCost := getTotalCost(newDrivers)
+
+		if shouldTakeNewPath(totalCost, newCost, t) {
+			totalCost = newCost
+			bestDrivers = newDrivers
 		}
 
-		for _, dispatcher := range dispatchers {
-			drivers := dispatcher.SearchForRoutes()
-
-			totalCost := getTotalCost(drivers)
-
-			if totalCost < bestTotalCost || bestTotalCost == 0 {
-				bestTotalCost = totalCost
-				bestDrivers = drivers
-			}
-		}
+		path = combineDriverLoads(bestDrivers)
 	}
+
 
 	return bestDrivers
+}
+
+func shouldTakeNewPath(oldCost float64, newCost float64, temperature float64) bool {
+	if newCost < oldCost {
+		return true
+	}
+
+	probability := math.Exp((oldCost - newCost) / temperature)
+	return rand.Float64() < probability
+}
+
+func randomSwap(loads []*entities.Load) {
+	firstIndex := int(rand.NewSource(time.Now().UnixNano()).Int63()) % len(loads)
+	secondIndex := int(rand.NewSource(time.Now().UnixNano()).Int63()) % len(loads)
+
+	temp := loads[firstIndex]
+
+	loads[firstIndex] = loads[secondIndex]
+	loads[secondIndex] = temp
+}
+
+func driveRoute(loads []*entities.Load) []*entities.Driver {
+	drivers := []*entities.Driver{}
+
+	for len(loads) > 0 {
+		driver := entities.NewDriver()
+
+		for len(loads) > 0 && driver.CanMoveLoad(loads[0]) {
+			driver.MoveLoad(loads[0])
+			loads = loads[1:]
+		}
+
+		drivers = append(drivers, driver)
+	}
+
+	return drivers
+}
+
+
+func combineDriverLoads(drivers []*entities.Driver) []*entities.Load {
+	loads := []*entities.Load{}
+	for _, driver := range drivers {
+		loads = append(loads, driver.GetPath()...)
+	}
+
+	return loads
 }
 
 func getTotalCost(drivers []*entities.Driver) float64 {
