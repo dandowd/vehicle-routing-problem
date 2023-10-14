@@ -78,6 +78,7 @@ func driveRoute(loads []*entities.Load) []*entities.Driver {
 			driver.MoveLoad(loads[0])
 			loads = loads[1:]
 		}
+		driver.ReturnToOrigin()
 
 		drivers = append(drivers, driver)
 	}
