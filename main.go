@@ -31,7 +31,7 @@ func annealing(startingLoads []*entities.Load) []*entities.Driver {
 	totalCost := getTotalCost(bestDrivers)
 	path := combineDriverLoads(bestDrivers)
 
-	for t := 1000.00; t > 0; t -= 0.01 {
+	for t := 100.00; t > 0; t -= 0.01 {
 		randomSwap(path)
 
 		newDrivers := driveRoute(path)
