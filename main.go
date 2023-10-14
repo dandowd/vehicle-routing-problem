@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"vehicle-routing-problem/cli"
-	"vehicle-routing-problem/dispatchers"
 	"vehicle-routing-problem/entities"
 	"vehicle-routing-problem/strategies"
 )
@@ -18,40 +17,9 @@ func main() {
 	filepath := os.Args[1]
 	loads := cli.ParseLoadFile(filepath)
 
-	drivers := RunDispatchers(loads)
+	drivers :=  RunStrategies(loads)
 
 	cli.FormatDrivers(drivers)
-}
-
-func RunDispatchers(startingLoads []*entities.Load) []*entities.Driver {
-	bestDrivers := dispatchers.NewNearestLoadDispatch(startingLoads).SearchForRoutes()
-	bestTotalCost := getTotalCost(bestDrivers)
-
-	driverUtil := dispatchers.NewDriverUtilizationDispatch(startingLoads).SearchForRoutes()
-	if getTotalCost(driverUtil) < bestTotalCost {
-		bestDrivers = driverUtil
-	}
-
-	for i := 0; i < len(startingLoads); i++ {
-		loads := rotateSlice(startingLoads, i)
-		dispatchers := []dispatchers.Dispatcher{
-			dispatchers.NewBruteForceDispatch(loads),
-			dispatchers.NewNearestDriverDispatch(loads, 400),
-		}
-
-		for _, dispatcher := range dispatchers {
-			drivers := dispatcher.SearchForRoutes()
-
-			totalCost := getTotalCost(drivers)
-
-			if totalCost < bestTotalCost || bestTotalCost == 0 {
-				bestTotalCost = totalCost
-				bestDrivers = drivers
-			}
-		}
-	}
-
-	return bestDrivers
 }
 
 func RunStrategies(startingLoads []*entities.Load) []*entities.Driver {
