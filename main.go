@@ -5,7 +5,6 @@ import (
 	"math"
 	"math/rand"
 	"os"
-	"time"
 	"vehicle-routing-problem/cli"
 	"vehicle-routing-problem/dispatchers"
 	"vehicle-routing-problem/entities"
@@ -31,18 +30,25 @@ func annealing(startingLoads []*entities.Load) []*entities.Driver {
 	totalCost := getTotalCost(bestDrivers)
 	path := combineDriverLoads(bestDrivers)
 
-	for t := 100.00; t > 0; t -= 0.01 {
+	temperature := 100.0
+	coolingRate := 0.95
+
+	for i := 0; i <= 200000; i++ {
 		randomSwap(path)
 
 		newDrivers := driveRoute(path)
 		newCost := getTotalCost(newDrivers)
 
-		if shouldTakeNewPath(totalCost, newCost, t) {
+		if shouldTakeNewPath(totalCost, newCost, temperature) {
 			totalCost = newCost
 			bestDrivers = newDrivers
 		}
 
 		path = combineDriverLoads(bestDrivers)
+
+		if i % 100 == 0 {
+			temperature *= coolingRate
+		}
 	}
 
 
@@ -54,13 +60,13 @@ func shouldTakeNewPath(oldCost float64, newCost float64, temperature float64) bo
 		return true
 	}
 
-	probability := math.Exp((oldCost - newCost) / temperature)
+	probability := math.Exp(-(newCost - oldCost) / temperature)
 	return rand.Float64() < probability
 }
 
 func randomSwap(loads []*entities.Load) {
-	firstIndex := int(rand.NewSource(time.Now().UnixNano()).Int63()) % len(loads)
-	secondIndex := int(rand.NewSource(time.Now().UnixNano()).Int63()) % len(loads)
+	firstIndex := rand.Intn(len(loads))
+	secondIndex := rand.Intn(len(loads))
 
 	temp := loads[firstIndex]
 
