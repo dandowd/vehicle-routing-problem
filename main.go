@@ -28,7 +28,7 @@ func main() {
 func annealing(startingLoads []*entities.Load) []*entities.Driver {
 	bestDrivers := dispatchers.NewNearestLoadDispatch(startingLoads).SearchForRoutes()
 	totalCost := getTotalCost(bestDrivers)
-	path := combineDriverLoads(bestDrivers)
+	path := startingLoads 
 
 	temperature := 1000.0
 	coolingRate := 0.98
