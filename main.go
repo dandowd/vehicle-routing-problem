@@ -60,8 +60,8 @@ func shouldTakeNewPath(oldCost float64, newCost float64, temperature float64) bo
 		return true
 	}
 
-	fmt.Printf("Cost difference: %f %f\n", newCost - oldCost, temperature)
-	probability := math.Exp(-(newCost - oldCost) / temperature)
+	fmt.Printf("Cost difference: %f %f\n", oldCost - newCost, temperature)
+	probability := math.Exp((oldCost - newCost) / temperature)
 	fmt.Printf("Probability: %f\n", probability)
 	return rand.Float64() < probability
 }
