@@ -18,8 +18,9 @@ func main() {
 	loads := cli.ParseLoadFile(filepath)
 
 	drivers := RunDispatchers(loads)
-	fmt.Println("Total cost:", getTotalCost(drivers))
-	cli.FormatDrivers(drivers)
+
+	cli.Logger.Println("Total cost:", getTotalCost(drivers))
+	cli.Logger.Println(cli.FormatPath(drivers))
 }
 
 func RunDispatchers(startingLoads []*entities.Load) []*entities.Driver {
