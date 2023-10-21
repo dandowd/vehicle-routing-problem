@@ -17,10 +17,10 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 	totalCost := math.MaxFloat64
 	path := startingLoads
 
-	temperature := 1000.0
+	temperature := 10000.0
 	coolingRate := 0.98
 
-	for i := 0; i <= 20000; i++ {
+	for i := 0; i <= 50000; i++ {
 		randomSwap(path)
 
 		newDrivers := driveRoute(path)

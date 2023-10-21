@@ -18,6 +18,7 @@ func main() {
 	loads := cli.ParseLoadFile(filepath)
 
 	drivers := dispatchers.Annealing(loads)
+	fmt.Println("Total Cost:", dispatchers.GetTotalCost(drivers))
 
 	if len(os.Args) == 3 {
 		visualizationName := os.Args[2]
