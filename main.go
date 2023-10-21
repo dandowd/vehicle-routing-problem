@@ -17,8 +17,11 @@ func main() {
 	filepath := os.Args[1]
 	loads := cli.ParseLoadFile(filepath)
 
+	nearestLoadDrivers := dispatchers.NewNearestLoadDispatch(loads).SearchForRoutes()
+	fmt.Println("Nearest Load Total Cost:", dispatchers.GetTotalCost(nearestLoadDrivers))
+
 	drivers := dispatchers.Annealing(loads)
-	fmt.Println("Total Cost:", dispatchers.GetTotalCost(drivers))
+	fmt.Println("Annealing Total Cost:", dispatchers.GetTotalCost(drivers))
 
 	if len(os.Args) == 3 {
 		visualizationName := os.Args[2]

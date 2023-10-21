@@ -13,12 +13,15 @@ var logger = cli.NewFileLogger("annealing_dispatch.log")
 func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 	graphLog := visualization.NewGraphLog()
 
-	bestDrivers := []*entities.Driver{}
-	totalCost := math.MaxFloat64
+	explorationDrivers := []*entities.Driver{}
+	bestExplorationCost := math.MaxFloat64
+
+	bestOverallDrivers := []*entities.Driver{}
+	bestOverallCost := math.MaxFloat64
 	path := startingLoads
 
 	temperature := 1000.0
-	coolingRate := 0.99
+	coolingRate := 0.98
 
 	totalIterations := 1000 * len(startingLoads)
 	for i := 0; i <= totalIterations; i++ {
@@ -27,28 +30,33 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 		newDrivers := driveRoute(path)
 		newCost := GetTotalCost(newDrivers)
 
-		if shouldTakeNewPath(totalCost, newCost, temperature) {
-			graphLog.AddPoint(float64(i), newCost)
-
-			totalCost = newCost
-			bestDrivers = newDrivers
+		if bestExplorationCost < bestOverallCost {
+			bestOverallCost = bestExplorationCost
+			bestOverallDrivers = explorationDrivers
 		}
 
-		path = CombineDriverLoads(bestDrivers)
+		if shouldExploreNewPath(bestExplorationCost, newCost, temperature) {
+			graphLog.AddPoint(float64(i), newCost)
+
+			bestExplorationCost = newCost
+			explorationDrivers = newDrivers
+		}
+
+		path = CombineDriverLoads(explorationDrivers)
 
 		if i%100 == 0 {
 			temperature *= coolingRate
 		}
 	}
 
-	logger.Println("Total cost:", totalCost)
-	logger.Println(cli.FormatPath(bestDrivers))
+	logger.Println("Total cost:", bestExplorationCost)
+	logger.Println(cli.FormatPath(explorationDrivers))
 	graphLog.CreateFile("annealing_dispatch_cost_graph")
 
-	return bestDrivers
+	return bestOverallDrivers
 }
 
-func shouldTakeNewPath(oldCost float64, newCost float64, temperature float64) bool {
+func shouldExploreNewPath(oldCost float64, newCost float64, temperature float64) bool {
 	if newCost < oldCost {
 		return true
 	}
