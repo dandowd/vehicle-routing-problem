@@ -9,7 +9,7 @@ import (
 func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 	bestDrivers := []*entities.Driver{}
 	totalCost := math.MaxFloat64
-	path := startingLoads 
+	path := startingLoads
 
 	temperature := 1000.0
 	coolingRate := 0.98
@@ -27,11 +27,10 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 
 		path = CombineDriverLoads(bestDrivers)
 
-		if i % 100 == 0 {
+		if i%100 == 0 {
 			temperature *= coolingRate
 		}
 	}
-
 
 	return bestDrivers
 }
