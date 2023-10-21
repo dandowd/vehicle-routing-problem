@@ -22,4 +22,6 @@ func main() {
 
 	nearestLoadLogger.Println("Total cost:", dispatchers.GetTotalCost(drivers))
 	nearestLoadLogger.Println(cli.FormatPath(drivers))
+
+	dispatchers.Annealing(loads)
 }

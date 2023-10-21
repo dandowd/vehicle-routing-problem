@@ -3,8 +3,11 @@ package dispatchers
 import (
 	"math"
 	"math/rand"
+	"vehicle-routing-problem/cli"
 	"vehicle-routing-problem/entities"
 )
+
+var logger = cli.NewFileLogger("annealing_dispatch.log")
 
 func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 	bestDrivers := []*entities.Driver{}
@@ -31,6 +34,9 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 			temperature *= coolingRate
 		}
 	}
+
+	logger.Println("Total cost:", totalCost)
+	logger.Println(cli.FormatPath(bestDrivers))
 
 	return bestDrivers
 }
