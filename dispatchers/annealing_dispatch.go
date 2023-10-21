@@ -6,9 +6,9 @@ import (
 	"vehicle-routing-problem/entities"
 )
 
-func annealing(startingLoads []*entities.Load) []*entities.Driver {
-	bestDrivers := NewNearestLoadDispatch(startingLoads).SearchForRoutes()
-	totalCost := GetTotalCost(bestDrivers)
+func Annealing(startingLoads []*entities.Load) []*entities.Driver {
+	bestDrivers := []*entities.Driver{}
+	totalCost := math.MaxFloat64
 	path := startingLoads 
 
 	temperature := 1000.0
