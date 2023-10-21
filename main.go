@@ -18,5 +18,7 @@ func main() {
 	loads := cli.ParseLoadFile(filepath)
 
 	drivers := dispatchers.Annealing(loads)
-	visualization.Route(drivers)
+	title := fmt.Sprintf("Total Cost: %f", dispatchers.GetTotalCost(drivers))
+
+	visualization.Route(drivers, title)
 }

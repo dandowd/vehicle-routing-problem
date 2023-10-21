@@ -10,8 +10,9 @@ import (
 	"gonum.org/v1/plot/vg"
 )
 
-func Route(drivers []*entities.Driver) {
+func Route(drivers []*entities.Driver, title string) {
   p := plot.New()
+  p.Title.Text = title
 
   points := plotter.XYs{}
   
@@ -40,7 +41,7 @@ func Route(drivers []*entities.Driver) {
 
     line.Color = plotutil.Color(driverIndex)
     p.Add(line)
-    p.Legend.Add(fmt.Sprint(driverIndex))
+    p.Legend.Add(fmt.Sprint(driverIndex), line)
   }
   
   scatter, err := plotter.NewScatter(points)
@@ -51,7 +52,7 @@ func Route(drivers []*entities.Driver) {
   scatter.GlyphStyle.Radius = vg.Points(10)
   p.Add(scatter)
 
-  if err := p.Save(20*vg.Inch, 20*vg.Inch, "route.png"); err != nil {
+  if err := p.Save(20*vg.Inch, 20*vg.Inch, fmt.Sprint("route.png")); err != nil {
 		panic("Could not save the plot to a PNG file")
 	}
 }
