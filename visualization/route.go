@@ -23,24 +23,18 @@ func Route(drivers []*entities.Driver, title string) {
       pickup := plotter.XY{X: load.Pickup.X, Y: load.Pickup.Y}
       dropoff := plotter.XY{X: load.Dropoff.X, Y: load.Dropoff.Y}
     
-      line, err := plotter.NewLine(plotter.XYs{lastPoint, pickup, dropoff})
-      if err != nil {
-        panic(err)
-      }
+      lineLine := getLoadLine(pickup, dropoff, driverIndex)
+      p.Add(lineLine)
 
-      line.Color = plotutil.Color(driverIndex)
-      p.Add(line)
+      travelLine := getTravelLine(lastPoint, pickup, driverIndex)
+      p.Add(travelLine)
 
       lastPoint = dropoff
     }
      
-    line, err := plotter.NewLine(plotter.XYs{lastPoint, plotter.XY{X: 0, Y: 0}})
-    if err != nil {
-      panic(err)
-    }
-
-    line.Color = plotutil.Color(driverIndex)
+    line := getTravelLine(lastPoint, plotter.XY{X: 0, Y: 0}, driverIndex)
     p.Add(line)
+
     p.Legend.Add(fmt.Sprint(driverIndex), line)
   }
   
@@ -55,4 +49,28 @@ func Route(drivers []*entities.Driver, title string) {
   if err := p.Save(20*vg.Inch, 20*vg.Inch, fmt.Sprint("route.png")); err != nil {
 		panic("Could not save the plot to a PNG file")
 	}
+}
+
+func getLoadLine(pickup plotter.XY, dropoff plotter.XY, driverIndex int) *plotter.Line {
+    line, err := plotter.NewLine(plotter.XYs{pickup, dropoff})
+    if err != nil {
+      panic(err)
+    }
+    
+    line.Color = plotutil.Color(driverIndex)
+
+    return line
+}
+
+func getTravelLine(lastPoint plotter.XY, pickup plotter.XY, driverIndex int) *plotter.Line {
+    travelLine, err := plotter.NewLine(plotter.XYs{lastPoint, pickup})
+    travelLine.LineStyle.Dashes = []vg.Length{vg.Points(5), vg.Points(5)}
+    if err != nil {
+      panic(err)
+    }
+
+    travelLine.Color = plotutil.Color(driverIndex)
+    travelLine.LineStyle.Dashes = []vg.Length{vg.Points(5), vg.Points(5)}
+
+    return travelLine
 }
