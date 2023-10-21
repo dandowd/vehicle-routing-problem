@@ -5,6 +5,7 @@ import (
 
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/plotutil"
 	"gonum.org/v1/plot/vg"
 )
 
@@ -13,17 +14,21 @@ func Route(drivers []*entities.Driver) {
 
   points := plotter.XYs{}
   
-  for _, driver := range drivers {
+  for driverIndex, driver := range drivers {
+    lastPoint := plotter.XY{X: 0, Y: 0}
     for _, load := range driver.GetPath() {
       pickup := plotter.XY{X: load.Pickup.X, Y: load.Pickup.Y}
       dropoff := plotter.XY{X: load.Dropoff.X, Y: load.Dropoff.Y}
     
-      line, err := plotter.NewLine(plotter.XYs{pickup, dropoff})
+      line, err := plotter.NewLine(plotter.XYs{lastPoint, pickup, dropoff})
       if err != nil {
         panic(err)
       }
 
+      line.Color = plotutil.Color(driverIndex)
       p.Add(line)
+
+      lastPoint = dropoff
     }
   }
   
