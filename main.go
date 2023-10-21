@@ -5,6 +5,7 @@ import (
 	"os"
 	"vehicle-routing-problem/cli"
 	"vehicle-routing-problem/dispatchers"
+	"vehicle-routing-problem/visualization"
 )
 
 func main() {
@@ -16,5 +17,6 @@ func main() {
 	filepath := os.Args[1]
 	loads := cli.ParseLoadFile(filepath)
 
-	dispatchers.Annealing(loads)
+	drivers := dispatchers.Annealing(loads)
+	visualization.Route(drivers)
 }
