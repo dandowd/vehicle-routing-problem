@@ -2,13 +2,12 @@ package cli
 
 import (
 	"fmt"
-	"io/fs"
 	"log"
 	"os"
 	"vehicle-routing-problem/entities"
 )
 
-var Logger = log.New(NewFileWriter("./out.txt"), "", log.LstdFlags|log.Lshortfile)
+var Logger = log.New(NewFileWriter("./out.txt"), "", 0)
 
 func PrintRoutes(drivers []*entities.Driver) {
 	for _, driver := range drivers {
@@ -46,8 +45,17 @@ func NewFileWriter(path string) *FileWriter {
 }
 
 func (f *FileWriter) Write(bytes []byte) (int, error) {
-	if err := os.WriteFile(f.path, bytes, fs.FileMode(0644)); err != nil {
-		fmt.Println("Error writing to file ", err)
+	file, err := os.OpenFile(f.path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
+	if err != nil {
+		return 0, err
+	}
+	defer file.Close()
+
+	content := string(bytes)
+	// Write the content to the file.
+	_, err = file.WriteString(content)
+	if err != nil {
+		return 0, err
 	}
 
 	return 0, nil
