@@ -18,7 +18,7 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 	path := startingLoads
 
 	temperature := 1000.0
-	coolingRate := 0.98
+	coolingRate := 0.99
 
 	totalIterations := 1000 * len(startingLoads)
 	for i := 0; i <= totalIterations; i++ {
