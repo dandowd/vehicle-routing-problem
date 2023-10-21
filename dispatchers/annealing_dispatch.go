@@ -5,11 +5,14 @@ import (
 	"math/rand"
 	"vehicle-routing-problem/cli"
 	"vehicle-routing-problem/entities"
+	"vehicle-routing-problem/visualization"
 )
 
 var logger = cli.NewFileLogger("annealing_dispatch.log")
 
 func Annealing(startingLoads []*entities.Load) []*entities.Driver {
+	graphLog := visualization.NewGraphLog()
+
 	bestDrivers := []*entities.Driver{}
 	totalCost := math.MaxFloat64
 	path := startingLoads
@@ -24,6 +27,8 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 		newCost := GetTotalCost(newDrivers)
 
 		if shouldTakeNewPath(totalCost, newCost, temperature) {
+			graphLog.AddPoint(float64(i), newCost)
+
 			totalCost = newCost
 			bestDrivers = newDrivers
 		}
@@ -37,6 +42,7 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 
 	logger.Println("Total cost:", totalCost)
 	logger.Println(cli.FormatPath(bestDrivers))
+	graphLog.CreateFile("annealing_dispatch_cost_graph")
 
 	return bestDrivers
 }
