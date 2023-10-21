@@ -7,7 +7,9 @@ import (
 	"vehicle-routing-problem/entities"
 )
 
-var Logger = log.New(NewFileWriter("./out.txt"), "", 0)
+func NewFileLogger(path string) *log.Logger {
+	return log.New(NewFileWriter(path), "", 0)
+}
 
 func PrintRoutes(drivers []*entities.Driver) {
 	for _, driver := range drivers {

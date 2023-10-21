@@ -7,6 +7,8 @@ import (
 	"vehicle-routing-problem/dispatchers"
 )
 
+var nearestLoadLogger = cli.NewFileLogger("./nearest_load.log")
+
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Println("This program takes exactly one argument, the path to the problem file.")
@@ -18,6 +20,6 @@ func main() {
 
 	drivers := dispatchers.NewNearestLoadDispatch(loads).SearchForRoutes()
 
-	cli.Logger.Println("Total cost:", dispatchers.GetTotalCost(drivers))
-	cli.Logger.Println(cli.FormatPath(drivers))
+	nearestLoadLogger.Println("Total cost:", dispatchers.GetTotalCost(drivers))
+	nearestLoadLogger.Println(cli.FormatPath(drivers))
 }
