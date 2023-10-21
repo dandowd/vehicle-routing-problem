@@ -11,7 +11,7 @@ import (
 	"gonum.org/v1/plot/vg/draw"
 )
 
-func Route(drivers []*entities.Driver, title string) {
+func Route(drivers []*entities.Driver, title string, filename string) {
 	p := plot.New()
 	p.Title.Text = title
 
@@ -47,8 +47,9 @@ func Route(drivers []*entities.Driver, title string) {
 
 	createDropoffScatter(dropoffPoints, p)
 
-	if err := p.Save(20*vg.Inch, 20*vg.Inch, fmt.Sprint("route.png")); err != nil {
-		panic("Could not save the plot to a PNG file")
+	if err := p.Save(20*vg.Inch, 20*vg.Inch, fmt.Sprint(filename, ".png")); err != nil {
+		fmt.Printf("Could not save the plot to a PNG file: %v\n", err)
+		panic(err)
 	}
 }
 

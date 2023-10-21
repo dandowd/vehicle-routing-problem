@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Println("This program takes exactly one argument, the path to the problem file.")
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: go run main.go <load-file> [visualization-name]")
 		os.Exit(1)
 	}
 
@@ -18,7 +18,11 @@ func main() {
 	loads := cli.ParseLoadFile(filepath)
 
 	drivers := dispatchers.Annealing(loads)
-	title := fmt.Sprintf("Total Cost: %f", dispatchers.GetTotalCost(drivers))
 
-	visualization.Route(drivers, title)
+	if len(os.Args) == 3 {
+		visualizationName := os.Args[2]
+		
+		title := fmt.Sprintf("Total Cost: %f", dispatchers.GetTotalCost(drivers))
+		visualization.Route(drivers, title, fmt.Sprint("annealing-", visualizationName))
+	}
 }
