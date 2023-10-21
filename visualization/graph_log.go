@@ -6,6 +6,7 @@ import (
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
+	"gonum.org/v1/plot/vg/draw"
 )
 
 type GraphLog struct {
@@ -28,6 +29,7 @@ func (g *GraphLog) CreateFile(filename string) {
     panic(err)
   }
 
+  scatter.GlyphStyle.Shape = draw.PlusGlyph{}
   p.Add(scatter)
 
 	if err := p.Save(10*vg.Inch, 10*vg.Inch, fmt.Sprint(filename, ".png")); err != nil {
