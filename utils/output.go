@@ -12,9 +12,7 @@ func NewFileLogger(path string) *log.Logger {
 }
 
 func PrintRoutes(drivers []*entities.Driver) {
-	for _, driver := range drivers {
-		fmt.Println(driver.GetPath())
-	}
+	fmt.Print(FormatPath(drivers))
 }
 
 func FormatPath(drivers []*entities.Driver) string {

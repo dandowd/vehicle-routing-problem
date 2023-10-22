@@ -23,22 +23,44 @@ func main() {
 				Aliases: []string{"ag"},
 				Usage:   "Annealing graph file path",
 			},
+			&cli.BoolFlag{
+				Name:    "fast",
+				Aliases: []string{"f"},
+				Usage:   "Run closest load algorithm only",
+			},
+			&cli.BoolFlag{
+				Name:    "print-costs",
+				Aliases: []string{"c"},
+				Usage:   "Run closest load algorithm only",
+			},
 		},
 		Action: func(c *cli.Context) error {
 			filepath := c.Args().First()
 			loads := utils.ParseLoadFile(filepath)
 
-			nearestLoadDrivers := dispatchers.NewNearestLoadDispatch(loads).SearchForRoutes()
-			fmt.Println("Nearest Load Total Cost:", dispatchers.GetTotalCost(nearestLoadDrivers))
+			bestDrivers := dispatchers.NewNearestLoadDispatch(loads).SearchForRoutes()
+			if c.Bool("print-costs") {
+				fmt.Println("Nearest Load Costs:", dispatchers.GetTotalCost(bestDrivers))
+			}
 
-			drivers := dispatchers.Annealing(loads)
-			fmt.Println("Annealing Total Cost:", dispatchers.GetTotalCost(drivers))
+			if !c.Bool("fast") {
+				annealingDrivers := dispatchers.Annealing(loads)
+				if c.Bool("print-costs") {
+					fmt.Println("Annealing Costs:", dispatchers.GetTotalCost(annealingDrivers))
+				}
+
+				if dispatchers.GetTotalCost(annealingDrivers) < dispatchers.GetTotalCost(bestDrivers) {
+					bestDrivers = annealingDrivers
+				}
+			}
 
 			routeFile := c.String("route")
 			if routeFile != "" {
-				title := fmt.Sprintf("Total Cost: %f", dispatchers.GetTotalCost(drivers))
-				visualization.Route(drivers, title, routeFile)
+				title := fmt.Sprintf("Total Cost: %f", dispatchers.GetTotalCost(bestDrivers))
+				visualization.Route(bestDrivers, title, routeFile)
 			}
+
+			utils.PrintRoutes(bestDrivers)
 
 			return nil
 		},
