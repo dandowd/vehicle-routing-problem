@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"os"
 	"vehicle-routing-problem/dispatchers"
 	"vehicle-routing-problem/utils"
@@ -22,7 +21,7 @@ func main() {
 			&cli.IntFlag{
 				Name:    "driver-count",
 				Aliases: []string{"dc"},
-				Value: 1,
+				Value: 0,
 				Usage:   "Number of drivers per route file",
 			},
 			&cli.StringFlag{
@@ -71,12 +70,10 @@ func main() {
 
 			routeFile := c.String("driver-route-file")
 			if routeFile != "" {
-				numberOfFiles := math.Ceil(float64(len(bestDrivers) / c.Int("driver-count")))
-				for i := 0; i < int(numberOfFiles); i++ {
-					driverChunk := bestDrivers[i*c.Int("driver-count") : (i+1)*c.Int("driver-count")]
-					title := fmt.Sprintf("Total Cost: %f", dispatchers.GetTotalCost(driverChunk))
-					filepath := fmt.Sprintf("%s_%d", routeFile, i)
-					visualization.Route(driverChunk, title, filepath)
+				if c.Int("driver-count") == 0 {
+					visualization.Route(bestDrivers, "Route", routeFile)
+				} else {
+					visualization.SplitRoutes(bestDrivers, routeFile, c.Int("driver-count"))
 				}
 			}
 

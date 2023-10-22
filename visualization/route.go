@@ -2,6 +2,7 @@ package visualization
 
 import (
 	"fmt"
+	"math"
 	"vehicle-routing-problem/entities"
 
 	"gonum.org/v1/plot"
@@ -10,6 +11,17 @@ import (
 	"gonum.org/v1/plot/vg"
 	"gonum.org/v1/plot/vg/draw"
 )
+
+func SplitRoutes(drivers []*entities.Driver, filename string, driverCount int) {
+	numberOfFiles := math.Ceil(float64(len(drivers) / driverCount))
+	for i := 0; i < int(numberOfFiles); i++ {
+		driverChunk := drivers[i*driverCount : (i+1)*driverCount]
+		title := fmt.Sprintf("Route %d", i)
+		filepath := fmt.Sprintf("%s_%d", filename, i)
+
+		Route(driverChunk, title, filepath)
+	}
+}
 
 func Route(drivers []*entities.Driver, title string, filename string) {
 	p := plot.New()
@@ -47,6 +59,8 @@ func Route(drivers []*entities.Driver, title string, filename string) {
 
 	createDropoffScatter(dropoffPoints, p)
 
+	createOriginScatter(p)
+
 	if err := p.Save(20*vg.Inch, 20*vg.Inch, fmt.Sprint(filename, ".png")); err != nil {
 		fmt.Printf("Could not save the plot to a PNG file: %v\n", err)
 		panic(err)
@@ -64,6 +78,23 @@ func createPickupScatter(pickupPoints plotter.XYs, p *plot.Plot) *plotter.Scatte
 
 	p.Add(scatter)
 	p.Legend.Add("Pickup", scatter)
+
+	return scatter
+}
+
+func createOriginScatter(p *plot.Plot) *plotter.Scatter {
+	origin := plotter.XY{X: 0, Y: 0}
+
+	scatter, err := plotter.NewScatter(plotter.XYs{origin})
+	if err != nil {
+		panic(err)
+	}
+
+	scatter.GlyphStyle.Shape = draw.CircleGlyph{}
+	scatter.GlyphStyle.Radius = vg.Points(8)
+
+	p.Add(scatter)
+	p.Legend.Add("Origin", scatter)
 
 	return scatter
 }
