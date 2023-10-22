@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"vehicle-routing-problem/dispatchers"
 	"vehicle-routing-problem/utils"
@@ -17,6 +18,12 @@ func main() {
 				Name:    "driver-route-file",
 				Aliases: []string{"r"},
 				Usage:   "Drivers routes file path",
+			},
+			&cli.IntFlag{
+				Name:    "driver-count",
+				Aliases: []string{"dc"},
+				Value: 1,
+				Usage:   "Number of drivers per route file",
 			},
 			&cli.StringFlag{
 				Name:    "annealing-graph",
@@ -45,6 +52,14 @@ func main() {
 
 			if !c.Bool("fast") {
 				annealingDrivers := dispatchers.Annealing(dispatchers.CombineDriverLoads(bestDrivers))
+				for i := 0; i < 5; i++ {
+					newAnnealingDrivers := dispatchers.Annealing(dispatchers.CombineDriverLoads(annealingDrivers))
+
+					if dispatchers.GetTotalCost(newAnnealingDrivers) < dispatchers.GetTotalCost(annealingDrivers) {
+						annealingDrivers = newAnnealingDrivers
+					}
+				}
+
 				if c.Bool("print-costs") {
 					fmt.Println("Annealing Costs:", dispatchers.GetTotalCost(annealingDrivers))
 				}
@@ -54,10 +69,15 @@ func main() {
 				}
 			}
 
-			routeFile := c.String("route")
+			routeFile := c.String("driver-route-file")
 			if routeFile != "" {
-				title := fmt.Sprintf("Total Cost: %f", dispatchers.GetTotalCost(bestDrivers))
-				visualization.Route(bestDrivers, title, routeFile)
+				numberOfFiles := math.Ceil(float64(len(bestDrivers) / c.Int("driver-count")))
+				for i := 0; i < int(numberOfFiles); i++ {
+					driverChunk := bestDrivers[i*c.Int("driver-count") : (i+1)*c.Int("driver-count")]
+					title := fmt.Sprintf("Total Cost: %f", dispatchers.GetTotalCost(driverChunk))
+					filepath := fmt.Sprintf("%s_%d", routeFile, i)
+					visualization.Route(driverChunk, title, filepath)
+				}
 			}
 
 			utils.PrintRoutes(bestDrivers)
