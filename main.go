@@ -25,7 +25,7 @@ func main() {
 
 	if len(os.Args) == 3 {
 		visualizationName := os.Args[2]
-		
+
 		title := fmt.Sprintf("Total Cost: %f", dispatchers.GetTotalCost(drivers))
 		visualization.Route(drivers, title, fmt.Sprint("annealing-", visualizationName))
 	}
