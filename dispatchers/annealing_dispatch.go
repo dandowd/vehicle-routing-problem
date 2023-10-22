@@ -3,12 +3,9 @@ package dispatchers
 import (
 	"math"
 	"math/rand"
-	"vehicle-routing-problem/cli"
 	"vehicle-routing-problem/entities"
 	"vehicle-routing-problem/visualization"
 )
-
-var logger = cli.NewFileLogger("annealing_dispatch.log")
 
 func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 	costIterationLog := visualization.NewGraphLog()
@@ -49,8 +46,6 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 		}
 	}
 
-	logger.Println("Total cost:", bestExplorationCost)
-	logger.Println(cli.FormatPath(explorationDrivers))
 	costIterationLog.CreateFile("annealing_dispatch_cost_graph")
 
 	return bestOverallDrivers
