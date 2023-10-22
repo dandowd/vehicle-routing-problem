@@ -22,7 +22,7 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 
 	totalIterations := 3000 * len(startingLoads)
 	for i := 0; i <= totalIterations; i++ {
-		randomSwap(path)
+		reverseConsecutiveLoads(path)
 
 		newDrivers := driveRoute(path)
 		newCost := GetTotalCost(newDrivers)
@@ -56,6 +56,19 @@ func shouldExploreNewPath(oldCost float64, newCost float64, temperature float64)
 	return rand.Float64() < probability
 }
 
+func reverseConsecutiveLoads(loads []*entities.Load) {
+	firstIndex := rand.Intn(len(loads))
+
+	if firstIndex == len(loads)-1 {
+		return
+	}
+
+	temp := loads[firstIndex]
+	loads[firstIndex] = loads[firstIndex+1]
+	loads[firstIndex+1] = temp
+}
+
+
 func randomSwap(loads []*entities.Load) {
 	firstIndex := rand.Intn(len(loads))
 	secondIndex := rand.Intn(len(loads))
@@ -64,6 +77,24 @@ func randomSwap(loads []*entities.Load) {
 
 	loads[firstIndex] = loads[secondIndex]
 	loads[secondIndex] = temp
+}
+
+func reverseRandomSegment(loads []*entities.Load) {
+	firstIndex := rand.Intn(len(loads))
+	secondIndex := rand.Intn(len(loads))
+
+	if firstIndex > secondIndex {
+		temp := firstIndex
+		firstIndex = secondIndex
+		secondIndex = temp
+	}
+
+	for i := 0; i < (secondIndex-firstIndex)/2; i++ {
+		temp := loads[firstIndex+i]
+
+		loads[firstIndex+i] = loads[secondIndex-i]
+		loads[secondIndex-i] = temp
+	}
 }
 
 func driveRoute(loads []*entities.Load) []*entities.Driver {

@@ -44,7 +44,7 @@ func main() {
 			}
 
 			if !c.Bool("fast") {
-				annealingDrivers := dispatchers.Annealing(loads)
+				annealingDrivers := dispatchers.Annealing(dispatchers.CombineDriverLoads(bestDrivers))
 				if c.Bool("print-costs") {
 					fmt.Println("Annealing Costs:", dispatchers.GetTotalCost(annealingDrivers))
 				}
