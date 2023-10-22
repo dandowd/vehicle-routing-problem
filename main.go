@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"vehicle-routing-problem/cli"
+	"vehicle-routing-problem/utils"
 	"vehicle-routing-problem/dispatchers"
 	"vehicle-routing-problem/visualization"
 )
@@ -15,7 +15,7 @@ func main() {
 	}
 
 	filepath := os.Args[1]
-	loads := cli.ParseLoadFile(filepath)
+	loads := utils.ParseLoadFile(filepath)
 
 	nearestLoadDrivers := dispatchers.NewNearestLoadDispatch(loads).SearchForRoutes()
 	fmt.Println("Nearest Load Total Cost:", dispatchers.GetTotalCost(nearestLoadDrivers))

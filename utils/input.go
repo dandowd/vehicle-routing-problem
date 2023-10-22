@@ -1,4 +1,4 @@
-package cli
+package utils
 
 import (
 	"bufio"
@@ -25,7 +25,6 @@ func ParseLoadFile(filepath string) []*entities.Load {
 	for scanner.Scan() {
 		loads = append(loads, parseLine(scanner.Text()))
 	}
-	file.Close()
 
 	return loads
 }
