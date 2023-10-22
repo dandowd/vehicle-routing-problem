@@ -7,7 +7,17 @@ import (
 	"vehicle-routing-problem/visualization"
 )
 
-func Annealing(startingLoads []*entities.Load) []*entities.Driver {
+func AnnealDrivers(drivers []*entities.Driver) []*entities.Driver {
+	optimzedDrivers := []*entities.Driver{}
+	for _, driver := range drivers {
+		drivers := Annealing(driver.GetPath(), 20000, 1000, 0.95, 100)
+		optimzedDrivers = append(optimzedDrivers, drivers...)
+	}
+
+	return optimzedDrivers
+}
+
+func Annealing(startingLoads []*entities.Load, iterations int, startingTemp float64, coolingRate float64, schedule int) []*entities.Driver {
 	costIterationLog := visualization.NewGraphLog()
 
 	explorationDrivers := []*entities.Driver{}
@@ -17,10 +27,9 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 	bestOverallCost := math.MaxFloat64
 	path := startingLoads
 
-	temperature := 1000.0
-	coolingRate := 0.994
+	temperature := startingTemp 
 
-	for i := 0; i <= 100000; i++ {
+	for i := 0; i <= iterations; i++ {
 		randomSwap(path)
 
 		newDrivers := driveRoute(path)
@@ -40,7 +49,7 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 
 		path = CombineDriverLoads(explorationDrivers)
 
-		if i%100 == 0 {
+		if i%schedule == 0 {
 			temperature *= coolingRate
 		}
 	}
