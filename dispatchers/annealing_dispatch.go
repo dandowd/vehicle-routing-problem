@@ -18,11 +18,10 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 	path := startingLoads
 
 	temperature := 1000.0
-	coolingRate := 0.997
+	coolingRate := 0.994
 
-	totalIterations := 3000 * len(startingLoads)
-	for i := 0; i <= totalIterations; i++ {
-		reverseConsecutiveLoads(path)
+	for i := 0; i <= 100000; i++ {
+		randomSwap(path)
 
 		newDrivers := driveRoute(path)
 		newCost := GetTotalCost(newDrivers)
@@ -52,6 +51,10 @@ func Annealing(startingLoads []*entities.Load) []*entities.Driver {
 }
 
 func shouldExploreNewPath(oldCost float64, newCost float64, temperature float64) bool {
+	if newCost < oldCost {
+		return true
+	}
+
 	probability := math.Exp((oldCost - newCost) / temperature)
 	return rand.Float64() < probability
 }
