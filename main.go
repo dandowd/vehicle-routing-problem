@@ -21,7 +21,7 @@ func main() {
 			&cli.IntFlag{
 				Name:    "driver-count",
 				Aliases: []string{"dc"},
-				Value: 0,
+				Value:   0,
 				Usage:   "Number of drivers per route file",
 			},
 			&cli.StringFlag{

@@ -8,23 +8,23 @@ import (
 )
 
 func PathAnnealing(startingLoads []*entities.Load, iterations int, startingTemp float64, coolingRate float64, schedule int) []*entities.Driver {
-  pathTracker := NewPathCostTracker(startingLoads)
+	pathTracker := NewPathCostTracker(startingLoads)
 
 	costIterationLog := visualization.NewGraphLog()
 
 	bestExplorationCost := math.MaxFloat64
-	temperature := startingTemp 
+	temperature := startingTemp
 
 	for i := 0; i <= iterations; i++ {
-    pathTracker.RandomSwap()
-    newCost := pathTracker.GetCost()
+		pathTracker.RandomSwap()
+		newCost := pathTracker.GetCost()
 		costIterationLog.AddPoint(float64(i), newCost)
 
 		if shouldExploreNewPath(bestExplorationCost, newCost, temperature) {
 			bestExplorationCost = newCost
 		} else {
-      pathTracker.UndoSwap()
-    }
+			pathTracker.UndoSwap()
+		}
 
 		if i%schedule == 0 {
 			temperature *= coolingRate
@@ -36,79 +36,78 @@ func PathAnnealing(startingLoads []*entities.Load, iterations int, startingTemp 
 	return driveRoute(pathTracker.path)
 }
 
-
 type PathCostTracker struct {
-  path []*entities.Load
-  cost float64
-  swapI int
-  swapK int
+	path  []*entities.Load
+	cost  float64
+	swapI int
+	swapK int
 }
 
 func NewPathCostTracker(path []*entities.Load) *PathCostTracker {
-  tracker := &PathCostTracker{path: []*entities.Load{}}
+	tracker := &PathCostTracker{path: []*entities.Load{}}
 
-  for _, load := range path {
-    tracker.AddLoad(load)
-  }
+	for _, load := range path {
+		tracker.AddLoad(load)
+	}
 
-  return tracker
+	return tracker
 }
 
-func (tracker *PathCostTracker)RandomSwap() {
-  tracker.swapI = rand.Intn(len(tracker.path))
-  tracker.swapK = rand.Intn(len(tracker.path))
+func (tracker *PathCostTracker) RandomSwap() {
+	tracker.swapI = rand.Intn(len(tracker.path))
+	tracker.swapK = rand.Intn(len(tracker.path))
 
-  tracker.SwapLoads(tracker.swapI, tracker.swapK)
+	tracker.SwapLoads(tracker.swapI, tracker.swapK)
 }
 
-func (tracker *PathCostTracker)UndoSwap() {
-  tracker.SwapLoads(tracker.swapI, tracker.swapK)
+func (tracker *PathCostTracker) UndoSwap() {
+	tracker.SwapLoads(tracker.swapI, tracker.swapK)
 }
 
 func (tracker *PathCostTracker) GetCost() float64 {
-  return tracker.cost
+	return tracker.cost
 }
 
 func (tracker *PathCostTracker) AddLoad(load *entities.Load) {
-  tracker.path = append(tracker.path, load)
-  tracker.addCost(len(tracker.path) - 1)
+	tracker.path = append(tracker.path, load)
+	tracker.addCost(len(tracker.path) - 1)
 }
 
 func (tracker *PathCostTracker) SwapLoads(i, k int) {
-  tracker.removeCost(i)
-  tracker.removeCost(k)
+	tracker.removeCost(i)
+	tracker.removeCost(k)
 
-  tracker.path[i], tracker.path[k] = tracker.path[k], tracker.path[i]
+	tracker.path[i], tracker.path[k] = tracker.path[k], tracker.path[i]
 
-  tracker.addCost(i)
-  tracker.addCost(k)
+	tracker.addCost(i)
+	tracker.addCost(k)
 }
 
 func (tracker *PathCostTracker) removeCost(i int) {
-  tracker.cost -= tracker.path[i].GetTime()
+	tracker.cost -= tracker.path[i].GetTime()
 
-  if i > 0 {
-    tracker.cost -= tracker.path[i - 1].Dropoff.DistanceTo(tracker.path[i].Pickup)
-  }   
+	if i > 0 {
+		tracker.cost -= tracker.path[i-1].Dropoff.DistanceTo(tracker.path[i].Pickup)
+	}
 
-  if i < len(tracker.path) - 1 {
-    tracker.cost -= tracker.path[i].Dropoff.DistanceTo(tracker.path[i + 1].Pickup)
-  }
+	if i < len(tracker.path)-1 {
+		tracker.cost -= tracker.path[i].Dropoff.DistanceTo(tracker.path[i+1].Pickup)
+	}
 }
 
 func (tracker *PathCostTracker) addCost(i int) {
-  tracker.cost += tracker.path[i].GetTime()
+	tracker.cost += tracker.path[i].GetTime()
 
-  if i > 0 {
-    tracker.cost += tracker.path[i - 1].Dropoff.DistanceTo(tracker.path[i].Pickup)
-  }   
+	if i > 0 {
+		tracker.cost += tracker.path[i-1].Dropoff.DistanceTo(tracker.path[i].Pickup)
+	}
 
-  if i < len(tracker.path) - 1 {
-    tracker.cost += tracker.path[i].Dropoff.DistanceTo(tracker.path[i + 1].Pickup)
-  }
+	if i < len(tracker.path)-1 {
+		tracker.cost += tracker.path[i].Dropoff.DistanceTo(tracker.path[i+1].Pickup)
+	}
 }
 
 func (tracker *PathCostTracker) insertLoad(i int, load *entities.Load) {
-  tracker.path[i] = load
-  tracker.addCost(i)
+	tracker.path[i] = load
+	tracker.addCost(i)
 }

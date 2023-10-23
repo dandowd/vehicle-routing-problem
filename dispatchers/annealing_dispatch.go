@@ -27,7 +27,7 @@ func Annealing(startingLoads []*entities.Load, iterations int, startingTemp floa
 	bestOverallCost := math.MaxFloat64
 	path := startingLoads
 
-	temperature := startingTemp 
+	temperature := startingTemp
 
 	for i := 0; i <= iterations; i++ {
 		randomSwap(path)
@@ -79,7 +79,6 @@ func reverseConsecutiveLoads(loads []*entities.Load) {
 	loads[firstIndex] = loads[firstIndex+1]
 	loads[firstIndex+1] = temp
 }
-
 
 func randomSwap(loads []*entities.Load) {
 	firstIndex := rand.Intn(len(loads))
