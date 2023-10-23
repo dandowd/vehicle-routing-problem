@@ -24,11 +24,6 @@ func main() {
 				Value:   0,
 				Usage:   "Number of drivers per route file",
 			},
-			&cli.StringFlag{
-				Name:    "annealing-graph",
-				Aliases: []string{"ag"},
-				Usage:   "Annealing graph file path",
-			},
 			&cli.BoolFlag{
 				Name:    "fast",
 				Aliases: []string{"f"},
