@@ -53,6 +53,10 @@ func NewPathCostTracker(path []*entities.Load) *PathCostTracker {
 	return tracker
 }
 
+func (tracker *PathCostTracker) EstimateDriverCost() float64 {
+	return GetTotalCost(driveRoute(tracker.path))
+}
+
 func (tracker *PathCostTracker) RandomSwap() {
 	tracker.swapI = rand.Intn(len(tracker.path))
 	tracker.swapK = rand.Intn(len(tracker.path))
@@ -74,12 +78,14 @@ func (tracker *PathCostTracker) AddLoad(load *entities.Load) {
 }
 
 func (tracker *PathCostTracker) SwapLoads(i, k int) {
+	temp := tracker.path[i]
+
 	tracker.removeCost(i)
-	tracker.removeCost(k)
-
-	tracker.path[i], tracker.path[k] = tracker.path[k], tracker.path[i]
-
+	tracker.path[i] = tracker.path[k]
 	tracker.addCost(i)
+
+	tracker.removeCost(k)
+	tracker.path[k] = temp
 	tracker.addCost(k)
 }
 
