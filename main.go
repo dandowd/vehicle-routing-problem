@@ -45,7 +45,13 @@ func main() {
 			}
 
 			if !c.Bool("fast") {
-				annealingDrivers := dispatchers.Annealing(loads, 20000, 1000, 0.97, 100)
+				annealingDrivers := dispatchers.Annealing(loads,
+					&dispatchers.AnnealingOptions{
+						Iterations:   10000,
+						CoolingRate:  0.97,
+						StartingTemp: 1000,
+						Schedule:     100,
+					})
 
 				if c.Bool("print-costs") {
 					fmt.Println("Annealing Costs:", dispatchers.GetTotalCost(annealingDrivers))

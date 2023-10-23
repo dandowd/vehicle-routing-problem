@@ -4,22 +4,30 @@ import (
 	"math"
 	"math/rand"
 	"vehicle-routing-problem/entities"
-	"vehicle-routing-problem/visualization"
 )
+
+type AnnealingOptions struct {
+	Iterations   int
+	StartingTemp float64
+	CoolingRate  float64
+	Schedule     int
+}
 
 func AnnealDrivers(drivers []*entities.Driver) []*entities.Driver {
 	optimzedDrivers := []*entities.Driver{}
 	for _, driver := range drivers {
-		drivers := Annealing(driver.GetPath(), 20000, 1000, 0.95, 100)
+		drivers := Annealing(
+			driver.GetPath(),
+			&AnnealingOptions{Iterations: 1000, StartingTemp: 1000, CoolingRate: 0.97, Schedule: 100},
+		)
+
 		optimzedDrivers = append(optimzedDrivers, drivers...)
 	}
 
 	return optimzedDrivers
 }
 
-func Annealing(startingLoads []*entities.Load, iterations int, startingTemp float64, coolingRate float64, schedule int) []*entities.Driver {
-	costIterationLog := visualization.NewGraphLog()
-
+func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*entities.Driver {
 	explorationDrivers := []*entities.Driver{}
 	bestExplorationCost := math.MaxFloat64
 
@@ -27,9 +35,9 @@ func Annealing(startingLoads []*entities.Load, iterations int, startingTemp floa
 	bestOverallCost := math.MaxFloat64
 	path := startingLoads
 
-	temperature := startingTemp
+	temperature := options.StartingTemp
 
-	for i := 0; i <= iterations; i++ {
+	for i := 0; i <= options.Iterations; i++ {
 		randomSwap(path)
 
 		newDrivers := driveRoute(path)
@@ -41,20 +49,16 @@ func Annealing(startingLoads []*entities.Load, iterations int, startingTemp floa
 		}
 
 		if shouldExploreNewPath(bestExplorationCost, newCost, temperature) {
-			costIterationLog.AddPoint(float64(i), newCost)
-
 			bestExplorationCost = newCost
 			explorationDrivers = newDrivers
 		}
 
 		path = CombineDriverLoads(explorationDrivers)
 
-		if i%schedule == 0 {
-			temperature *= coolingRate
+		if i%options.Schedule == 0 {
+			temperature *= options.CoolingRate
 		}
 	}
-
-	costIterationLog.CreateFile("annealing_dispatch_cost_graph")
 
 	return bestOverallDrivers
 }
