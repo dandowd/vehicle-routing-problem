@@ -32,7 +32,7 @@ func main() {
 			&cli.BoolFlag{
 				Name:    "print-costs",
 				Aliases: []string{"c"},
-				Usage:   "Run closest load algorithm only",
+				Usage:   "Print costs of each algorithm",
 			},
 		},
 		Action: func(c *cli.Context) error {
@@ -45,7 +45,7 @@ func main() {
 			}
 
 			if !c.Bool("fast") {
-				annealingDrivers := dispatchers.PathAnnealing(loads, 100000, 1000, 0.9999, 1)
+				annealingDrivers := dispatchers.Annealing(loads, 20000, 1000, 0.97, 100)
 
 				if c.Bool("print-costs") {
 					fmt.Println("Annealing Costs:", dispatchers.GetTotalCost(annealingDrivers))
