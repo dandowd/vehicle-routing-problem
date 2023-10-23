@@ -47,8 +47,8 @@ func main() {
 			if !c.Bool("fast") {
 				annealingDrivers := dispatchers.Annealing(loads,
 					&dispatchers.AnnealingOptions{
-						Iterations:   10000,
-						CoolingRate:  0.97,
+						Iterations:   30000,
+						CoolingRate:  0.963,
 						StartingTemp: 1000,
 						Schedule:     100,
 					})
