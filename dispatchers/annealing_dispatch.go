@@ -17,12 +17,15 @@ type AnnealingOptions struct {
 func AnnealDrivers(drivers []*entities.Driver, options *AnnealingOptions) []*entities.Driver {
 	optimzedDrivers := []*entities.Driver{}
 	for _, driver := range drivers {
-		drivers := Annealing(
-			driver.GetPath(),
-			options,
-		)
-
-		optimzedDrivers = append(optimzedDrivers, drivers...)
+		if len(driver.GetPath()) > 1 {
+			drivers := Annealing(
+				driver.GetPath(),
+				options,
+			)
+			optimzedDrivers = append(optimzedDrivers, drivers...)
+		} else {
+			optimzedDrivers = append(optimzedDrivers, driver)
+		}
 	}
 
 	return optimzedDrivers
@@ -35,8 +38,8 @@ func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*ent
 	explorationDrivers := []*entities.Driver{}
 	bestExplorationCost := math.MaxFloat64
 
-	bestOverallDrivers := []*entities.Driver{}
-	bestOverallCost := math.MaxFloat64
+	bestOverallDrivers := driveRoute(startingLoads)
+	bestOverallCost := GetTotalCost(bestOverallDrivers)
 	path := startingLoads
 
 	temperature := options.StartingTemp
