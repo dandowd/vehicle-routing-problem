@@ -30,6 +30,7 @@ func AnnealDrivers(drivers []*entities.Driver, options *AnnealingOptions) []*ent
 
 func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*entities.Driver {
 	graphLog := visualization.NewGraphLog()
+	tempLog := visualization.NewGraphLog()
 
 	explorationDrivers := []*entities.Driver{}
 	bestExplorationCost := math.MaxFloat64
@@ -46,9 +47,9 @@ func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*ent
 		newDrivers := driveRoute(path)
 		newCost := GetTotalCost(newDrivers)
 
-		if bestExplorationCost < bestOverallCost {
-			bestOverallCost = bestExplorationCost
-			bestOverallDrivers = explorationDrivers
+		if newCost < bestOverallCost {
+			bestOverallCost = newCost 
+			bestOverallDrivers = newDrivers
 		}
 
 		if shouldExploreNewPath(bestExplorationCost, newCost, temperature) {
@@ -62,8 +63,10 @@ func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*ent
 		if i%options.Schedule == 0 {
 			temperature *= options.CoolingRate
 		}
+		tempLog.AddPoint(float64(i), temperature)
 	}
 
+	tempLog.CreateFile("annealing_temp")
 	graphLog.CreateFile("annealing_graph")
 	return bestOverallDrivers
 }
