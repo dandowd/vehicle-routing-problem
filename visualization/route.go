@@ -52,7 +52,7 @@ func Route(drivers []*entities.Driver, title string, filename string) {
 		line := newTravelLine(lastPoint, plotter.XY{X: 0, Y: 0}, driverIndex)
 		p.Add(line)
 
-		p.Legend.Add(fmt.Sprint(driverIndex), line)
+		p.Legend.Add(fmt.Sprintf("Driver number: %d, utilization: %f", driverIndex, driver.GetTotalTime()), line)
 	}
 
 	createPickupScatter(pickupPoints, p)
