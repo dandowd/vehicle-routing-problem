@@ -7,15 +7,15 @@ import (
 	"vehicle-routing-problem/visualization"
 )
 
-func PathAnnealing(startingLoads []*entities.Load, iterations int, startingTemp float64, coolingRate float64, schedule int) []*entities.Driver {
+func PathAnnealing(startingLoads []*entities.Load, options *AnnealingOptions) []*entities.Driver {
 	pathTracker := NewPathCostTracker(startingLoads)
 
 	costIterationLog := visualization.NewGraphLog()
 
 	bestExplorationCost := math.MaxFloat64
-	temperature := startingTemp
+	temperature := options.StartingTemp
 
-	for i := 0; i <= iterations; i++ {
+	for i := 0; i <= options.Iterations; i++ {
 		pathTracker.RandomSwap()
 		newCost := pathTracker.GetCost()
 		costIterationLog.AddPoint(float64(i), newCost)
@@ -26,8 +26,8 @@ func PathAnnealing(startingLoads []*entities.Load, iterations int, startingTemp 
 			pathTracker.UndoSwap()
 		}
 
-		if i%schedule == 0 {
-			temperature *= coolingRate
+		if i%options.Schedule == 0 {
+			temperature *= options.CoolingRate
 		}
 	}
 
