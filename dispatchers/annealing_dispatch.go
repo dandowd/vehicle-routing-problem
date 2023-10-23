@@ -4,6 +4,7 @@ import (
 	"math"
 	"math/rand"
 	"vehicle-routing-problem/entities"
+	"vehicle-routing-problem/visualization"
 )
 
 type AnnealingOptions struct {
@@ -13,12 +14,12 @@ type AnnealingOptions struct {
 	Schedule     int
 }
 
-func AnnealDrivers(drivers []*entities.Driver) []*entities.Driver {
+func AnnealDrivers(drivers []*entities.Driver, options *AnnealingOptions) []*entities.Driver {
 	optimzedDrivers := []*entities.Driver{}
 	for _, driver := range drivers {
 		drivers := Annealing(
 			driver.GetPath(),
-			&AnnealingOptions{Iterations: 1000, StartingTemp: 1000, CoolingRate: 0.97, Schedule: 100},
+			options,
 		)
 
 		optimzedDrivers = append(optimzedDrivers, drivers...)
@@ -28,6 +29,8 @@ func AnnealDrivers(drivers []*entities.Driver) []*entities.Driver {
 }
 
 func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*entities.Driver {
+	graphLog := visualization.NewGraphLog()
+
 	explorationDrivers := []*entities.Driver{}
 	bestExplorationCost := math.MaxFloat64
 
@@ -53,6 +56,7 @@ func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*ent
 			explorationDrivers = newDrivers
 		}
 
+		graphLog.AddPoint(float64(i), newCost)
 		path = CombineDriverLoads(explorationDrivers)
 
 		if i%options.Schedule == 0 {
@@ -60,6 +64,7 @@ func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*ent
 		}
 	}
 
+	graphLog.CreateFile("annealing_graph")
 	return bestOverallDrivers
 }
 
