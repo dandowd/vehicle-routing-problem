@@ -40,7 +40,7 @@ func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*ent
 
 	bestOverallDrivers := explorationDrivers
 	bestOverallCost := explorationCost
-	path := multipleShuffle(startingLoads, 20)
+	path := startingLoads 
 
 	temperature := options.StartingTemp
 
