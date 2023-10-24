@@ -40,7 +40,7 @@ func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*ent
 
 	bestOverallDrivers := explorationDrivers
 	bestOverallCost := explorationCost
-	path := startingLoads 
+	path := startingLoads
 
 	for reheat := 0; reheat < 5; reheat++ {
 		temperature := options.StartingTemp
