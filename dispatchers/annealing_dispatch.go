@@ -42,10 +42,8 @@ func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*ent
 	bestOverallCost := explorationCost
 	path := startingLoads 
 
-	temperature := options.StartingTemp
-
 	for reheat := 0; reheat < 5; reheat++ {
-		temperature = options.StartingTemp
+		temperature := options.StartingTemp
 
 		for i := 0; i <= options.Iterations; i++ {
 			randomSwap(path)
