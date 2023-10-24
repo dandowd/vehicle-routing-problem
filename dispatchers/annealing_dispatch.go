@@ -35,47 +35,68 @@ func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*ent
 	graphLog := visualization.NewGraphLog()
 	tempLog := visualization.NewGraphLog()
 
-	explorationDrivers := []*entities.Driver{}
-	bestExplorationCost := math.MaxFloat64
+	explorationDrivers := driveRoute(startingLoads)
+	explorationCost := GetTotalCost(explorationDrivers)
 
-	bestOverallDrivers := driveRoute(startingLoads)
-	bestOverallCost := GetTotalCost(bestOverallDrivers)
-	path := startingLoads
+	bestOverallDrivers := explorationDrivers
+	bestOverallCost := explorationCost
+	path := multipleShuffle(startingLoads, 20)
 
 	temperature := options.StartingTemp
 
 	for reheat := 0; reheat < 5; reheat++ {
 		temperature = options.StartingTemp
+
 		for i := 0; i <= options.Iterations; i++ {
 			randomSwap(path)
 
 			newDrivers := driveRoute(path)
 			newCost := GetTotalCost(newDrivers)
 
-			if newCost < bestOverallCost {
-				bestOverallCost = newCost
-				bestOverallDrivers = newDrivers
-				i = 0
-			}
+			if shouldExploreNewPath(explorationCost, newCost, temperature) {
+				graphLog.AddPoint(float64(i), newCost)
 
-			if shouldExploreNewPath(bestExplorationCost, newCost, temperature) {
-				bestExplorationCost = newCost
+				explorationCost = newCost
 				explorationDrivers = newDrivers
 			}
 
-			graphLog.AddPoint(float64(i), newCost)
 			path = CombineDriverLoads(explorationDrivers)
 
 			if i%options.Schedule == 0 {
 				temperature *= options.CoolingRate
 			}
 			tempLog.AddPoint(float64(i), temperature)
+
+			if newCost < bestOverallCost {
+				bestOverallCost = newCost
+				bestOverallDrivers = newDrivers
+				i = 0
+			}
 		}
 	}
 
 	tempLog.CreateFile("annealing_temp")
 	graphLog.CreateFile("annealing_graph")
 	return bestOverallDrivers
+}
+
+func multipleShuffle(loads []*entities.Load, count int) []*entities.Load {
+	for i := 0; i < count; i++ {
+		loads = shuffleLoads(loads)
+	}
+
+	return loads
+}
+
+func shuffleLoads(loads []*entities.Load) []*entities.Load {
+	shuffledLoads := []*entities.Load{}
+	for len(loads) > 0 {
+		index := rand.Intn(len(loads))
+		shuffledLoads = append(shuffledLoads, loads[index])
+		loads = append(loads[:index], loads[index+1:]...)
+	}
+
+	return shuffledLoads
 }
 
 func shouldExploreNewPath(oldCost float64, newCost float64, temperature float64) bool {
