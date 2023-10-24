@@ -15,6 +15,7 @@ The executable takes a single argument for location of a problem file
 example `./vehicle-routing-problem ./problems/problem1.txt`
 
 # Visualizations
-- Use the `--driver-route-file` to define a file location for driver schedules
+- Visualizations can increase runtime and should not be used when benchmarking the program runtime.
+- Use the `--driver-route-file` to define a file location for driver schedules.
 - Use `--driver-count` to define how many drivers per driver route file. Default will include all drivers in single file. If multiple files are required a suffix will be added to the file name.
 - A file called `annealing_graph.png` and `annealing_temp.png` will be created, this cannot be changed at the moment.
