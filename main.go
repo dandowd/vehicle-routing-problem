@@ -47,10 +47,10 @@ func main() {
 			if !c.Bool("fast") {
 				annealingDrivers := dispatchers.Annealing(dispatchers.CombineDriverLoads(bestDrivers),
 					&dispatchers.AnnealingOptions{
-						Iterations:   100000,
+						Iterations:   20000,
 						StartingTemp: 100,
-						CoolingRate:  0.9999,
-						Schedule:     2,
+						CoolingRate:  0.9997,
+						Schedule:     1,
 					})
 
 				if c.Bool("print-costs") {
