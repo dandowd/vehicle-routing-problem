@@ -51,8 +51,9 @@ func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*ent
 		newCost := GetTotalCost(newDrivers)
 
 		if newCost < bestOverallCost {
-			bestOverallCost = newCost 
+			bestOverallCost = newCost
 			bestOverallDrivers = newDrivers
+			i = 0
 		}
 
 		if shouldExploreNewPath(bestExplorationCost, newCost, temperature) {
