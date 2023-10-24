@@ -44,30 +44,33 @@ func Annealing(startingLoads []*entities.Load, options *AnnealingOptions) []*ent
 
 	temperature := options.StartingTemp
 
-	for i := 0; i <= options.Iterations; i++ {
-		randomSwap(path)
+	for reheat := 0; reheat < 5; reheat++ {
+		temperature = options.StartingTemp
+		for i := 0; i <= options.Iterations; i++ {
+			randomSwap(path)
 
-		newDrivers := driveRoute(path)
-		newCost := GetTotalCost(newDrivers)
+			newDrivers := driveRoute(path)
+			newCost := GetTotalCost(newDrivers)
 
-		if newCost < bestOverallCost {
-			bestOverallCost = newCost
-			bestOverallDrivers = newDrivers
-			i = 0
+			if newCost < bestOverallCost {
+				bestOverallCost = newCost
+				bestOverallDrivers = newDrivers
+				i = 0
+			}
+
+			if shouldExploreNewPath(bestExplorationCost, newCost, temperature) {
+				bestExplorationCost = newCost
+				explorationDrivers = newDrivers
+			}
+
+			graphLog.AddPoint(float64(i), newCost)
+			path = CombineDriverLoads(explorationDrivers)
+
+			if i%options.Schedule == 0 {
+				temperature *= options.CoolingRate
+			}
+			tempLog.AddPoint(float64(i), temperature)
 		}
-
-		if shouldExploreNewPath(bestExplorationCost, newCost, temperature) {
-			bestExplorationCost = newCost
-			explorationDrivers = newDrivers
-		}
-
-		graphLog.AddPoint(float64(i), newCost)
-		path = CombineDriverLoads(explorationDrivers)
-
-		if i%options.Schedule == 0 {
-			temperature *= options.CoolingRate
-		}
-		tempLog.AddPoint(float64(i), temperature)
 	}
 
 	tempLog.CreateFile("annealing_temp")
