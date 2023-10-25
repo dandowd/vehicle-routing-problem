@@ -21,3 +21,10 @@ func CombineDriverLoads(drivers []*entities.Driver) []*entities.Load {
 
 	return loads
 }
+
+func returnAllDriversToOrigin(drivers []*entities.Driver) []*entities.Driver {
+	for _, driver := range drivers {
+		driver.ReturnToOrigin()
+	}
+	return drivers
+}
